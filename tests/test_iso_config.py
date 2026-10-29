@@ -6,7 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class LiveBuildConfigTests(unittest.TestCase):
     def test_shell_syntax(self):
-        for path in (ROOT/'iso/build.sh', ROOT/'iso/overlays/usr/local/bin/aevonyr-android-setup'):
+        for path in (ROOT/'iso/build.sh', ROOT/'iso/overlays/usr/local/bin/aevonyr-android-setup', ROOT/'iso/overlays/usr/local/bin/aevonyr-installer', ROOT/'iso/hooks/normal/0100-aevonyr-splash.hook.chroot'):
             subprocess.run(['bash','-n',str(path)],check=True)
     def test_package_list(self):
         lines = (ROOT/'iso/package-lists/desktop.list.chroot').read_text().splitlines()
