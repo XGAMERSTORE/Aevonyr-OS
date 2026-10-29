@@ -40,7 +40,7 @@ class AevonyrDesktop(tk.Tk):
         self.language = self.preferences["language"]
         self.current_page = "home"
         self.current_dir = Path.home()
-        self.title("Aevonyr OS 0.9.0 — Project Eclipse")
+        self.title("Aevonyr OS 1.0 — Eclipse Edition")
         self.geometry("1140x730")
         self.minsize(780, 520)
         self.configure(bg=BG)
@@ -103,7 +103,7 @@ class AevonyrDesktop(tk.Tk):
         for child in self.nav.winfo_children():
             child.destroy()
         for page, icon in (("home", "⌂"), ("apps", "◇"), ("files", "▣"),
-                           ("network", "◉"), ("updates", "↻"), ("phone", "▤"), ("system", "◈"), ("restore", "◷"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
+                           ("network", "◉"), ("updates", "↻"), ("phone", "▤"), ("pulse", "◕"), ("system", "◈"), ("restore", "◷"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
             selected = page == self.current_page
             button = self._button(self.nav, f" {icon}   {self.t(page)}",
                                   lambda p=page: self.show(p),
@@ -135,7 +135,7 @@ class AevonyrDesktop(tk.Tk):
             child.destroy()
         {
             "home": self.home_page, "apps": self.apps_page, "files": self.files_page,
-            "network": self.network_page, "updates": self.updates_page, "phone": self.phone_page, "system": self.system_page, "restore": self.restore_page, "notes": self.notes_page, "settings": self.settings_page,
+            "network": self.network_page, "updates": self.updates_page, "phone": self.phone_page, "pulse": self.pulse_page, "system": self.system_page, "restore": self.restore_page, "notes": self.notes_page, "settings": self.settings_page,
             "about": self.about_page
         }[page]()
 
@@ -164,9 +164,16 @@ class AevonyrDesktop(tk.Tk):
         self._button(row, self.t("restore"), lambda: self.show("restore")).pack(side="left", padx=(0, 9))
         self._button(row, self.t("updates"), lambda: self.show("updates")).pack(side="left", padx=(0, 9))
         self._button(row, self.t("phone"), lambda: self.show("phone")).pack(side="left")
+        self._button(self.body, self.t("pulse_open"), lambda: self.show("pulse")).pack(
+            anchor="w", pady=(12, 0))
         if is_live_boot():
             self._label(self.body, self.t("live_mode_hint"), 10, PINK).pack(
                 anchor="w", pady=(18, 0))
+
+    def pulse_page(self):
+        # Aevonyr Pulse updates are read-only and stop when the page is removed.
+        from .pulse_ui import PulsePanel
+        PulsePanel(self.body, self.t).pack(fill="both", expand=True)
 
     def _maybe_welcome(self):
         if not completed():
@@ -613,7 +620,7 @@ class AevonyrDesktop(tk.Tk):
                 break
 
     def about_page(self):
-        self._label(self.body, "Aevonyr OS 0.9.0 Linux Live — Project Eclipse", 22, INK, True).pack(anchor="w", pady=(0, 14))
+        self._label(self.body, "Aevonyr OS 1.0 Linux Live — Eclipse Edition", 22, INK, True).pack(anchor="w", pady=(0, 14))
         self._label(self.body, self.t("about_desc"), 12, MUTED).pack(anchor="w", pady=(0, 14))
         self._label(self.body, f"Python {platform.python_version()}  •  {platform.system()}",
                     11, MUTED).pack(anchor="w")

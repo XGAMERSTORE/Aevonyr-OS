@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Pulse
+Comment=Actual CPU, memory, disk and system performance dashboard
+Exec=/usr/local/bin/aevonyr --pulse
+Icon=utilities-system-monitor
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true
