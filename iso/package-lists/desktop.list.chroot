@@ -9,7 +9,7 @@ firmware-realtek
 
 # Genuine graphical KDE Wayland desktop, login and network tools
 task-kde-desktop
-plasma-workspace-wayland
+plasma-workspace
 plasma-nm
 sddm
 xwayland
