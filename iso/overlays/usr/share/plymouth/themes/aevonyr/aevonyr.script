@@ -1,0 +1,83 @@
+# Aevonyr Eclipse: animated boot and shutdown in Plymouth script language.
+Window.SetBackgroundTopColor(0.035, 0.018, 0.075);
+Window.SetBackgroundBottomColor(0.09, 0.035, 0.18);
+w = Window.GetWidth(0);
+h = Window.GetHeight(0);
+cx = Window.GetX() + w/2;
+cy = Window.GetY() + h/2;
+logo = Image.Text("AEVONYR", 0.97, 0.81, 1.0);
+logo = logo.Scale(logo.GetWidth()*3,logo.GetHeight()*3);
+glow = Image.Text("AEVONYR", 0.60, 0.28, 0.95);
+glow = glow.Scale(glow.GetWidth()*3,glow.GetHeight()*3);
+glow_sprite = Sprite(glow);
+glow_sprite.SetPosition(cx-glow.GetWidth()/2+4,cy-70,1);
+logo_sprite = Sprite(logo);
+logo_sprite.SetPosition(cx-logo.GetWidth()/2,cy-74,2);
+tag = Image.Text("ONE SYSTEM. TWO WORLDS.",0.75,0.62,0.95);
+tag_sprite = Sprite(tag);
+tag_sprite.SetPosition(cx-tag.GetWidth()/2,cy+13,3);
+if (Plymouth.GetMode() == "shutdown")
+    status = Image.Text("SHUTTING DOWN",0.84,0.71,1.0);
+else
+    status = Image.Text("STARTING UP",0.84,0.71,1.0);
+status_sprite = Sprite(status);
+status_sprite.SetPosition(cx-status.GetWidth()/2,cy+75,3);
+prompt_sprite = Sprite();
+entry_sprite = Sprite();
+message_sprite = Sprite();
+prompt_sprite.SetOpacity(0);
+entry_sprite.SetOpacity(0);
+message_sprite.SetOpacity(0);
+frame = 0;
+asking = 0;
+fun refresh() {
+    frame++;
+    if (asking == 0) {
+        phase = frame % 100;
+        if (phase < 50)
+            alpha = 0.66 + phase/50.0*0.34;
+        else
+            alpha = 1.0-(phase-50)/50.0*0.34;
+        logo_sprite.SetOpacity(alpha);
+        glow_sprite.SetOpacity(1.0-alpha);
+    }
+}
+Plymouth.SetRefreshFunction(refresh);
+fun password_callback(prompt, bullets) {
+    asking = 1;
+    status_sprite.SetOpacity(0);
+    prompt_image = Image.Text(prompt,1.0,0.85,1.0);
+    prompt_sprite.SetImage(prompt_image);
+    prompt_sprite.SetPosition(cx-prompt_image.GetWidth()/2,cy+70,5);
+    prompt_sprite.SetOpacity(1);
+    stars = "";
+    for (i=0; i<bullets && i<120; i++)
+        stars += "*";
+    entry_image = Image.Text(stars,1.0,1.0,1.0);
+    entry_sprite.SetImage(entry_image);
+    entry_sprite.SetPosition(cx-entry_image.GetWidth()/2,cy+110,5);
+    entry_sprite.SetOpacity(1);
+}
+Plymouth.SetDisplayPasswordFunction(password_callback);
+fun question_callback(prompt,text) {
+    password_callback(prompt,0);
+}
+Plymouth.SetDisplayQuestionFunction(question_callback);
+fun normal_callback() {
+    asking=0;
+    prompt_sprite.SetOpacity(0);
+    entry_sprite.SetOpacity(0);
+    status_sprite.SetOpacity(1);
+}
+Plymouth.SetDisplayNormalFunction(normal_callback);
+fun message_callback(message) {
+    image = Image.Text(message,1.0,0.91,1.0);
+    message_sprite.SetImage(image);
+    message_sprite.SetPosition(cx-image.GetWidth()/2,cy+160,6);
+    message_sprite.SetOpacity(1);
+}
+Plymouth.SetDisplayMessageFunction(message_callback);
+fun hide_message_callback(message) {
+    message_sprite.SetOpacity(0);
+}
+Plymouth.SetHideMessageFunction(hide_message_callback);

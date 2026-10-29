@@ -2,10 +2,12 @@
 import argparse
 from .compat import backend_status, make_plan, execute_plan, CompatibilityError
 from .i18n import LANGUAGES, CATALOG, install_language_pack
+from .diagnostics import diagnose, format_report
 
 def main():
     parser = argparse.ArgumentParser(description="Aevonyr OS desktop preview")
     parser.add_argument("--check", action="store_true", help="check runtime availability")
+    parser.add_argument("--diagnose", action="store_true", help="show actual Linux system diagnostics")
     parser.add_argument("--launch", metavar="FILE", help="launch EXE/MSI or install APK")
     parser.add_argument("--languages", action="store_true", help="list installed interface languages")
     parser.add_argument("--install-language", metavar="JSON", help="install a community language pack")
@@ -22,6 +24,9 @@ def main():
         except (ValueError, OSError, UnicodeError) as exc:
             parser.exit(1, f"Language pack error: {exc}\n")
         print(f"Installed language pack: {code}")
+        return 0
+    if args.diagnose:
+        print(format_report(diagnose()))
         return 0
     if args.check:
         for key, value in backend_status().items():

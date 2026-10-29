@@ -20,12 +20,27 @@ class LiveBuildConfigTests(unittest.TestCase):
         self.assertIn('Current=aevonyr', (root/'etc/sddm.conf.d/20-aevonyr.conf').read_text())
         self.assertIn('plasma-apply-wallpaperimage', (root/'usr/local/bin/aevonyr-wallpaper-init').read_text())
         self.assertIn('quiet splash', (ROOT/'iso/build.sh').read_text())
-        self.assertIn('plymouth-set-default-theme -R breeze', (ROOT/'iso/hooks/normal/0100-aevonyr-splash.hook.chroot').read_text())
+        self.assertIn('plymouth-set-default-theme -R aevonyr', (ROOT/'iso/hooks/normal/0100-aevonyr-splash.hook.chroot').read_text())
+
+    def test_aevonyr_splash_wired_into_build(self):
+        root = ROOT/'iso/overlays/usr/share/plymouth/themes/aevonyr'
+        self.assertIn('ModuleName=script',(root/'aevonyr.plymouth').read_text())
+        script=(root/'aevonyr.script').read_text()
+        self.assertIn('Plymouth.SetRefreshFunction',script)
+        self.assertIn('Plymouth.SetDisplayPasswordFunction',script)
+        self.assertIn('cp -a "$ROOT/iso/hooks/normal/." config/hooks/normal/',
+                      (ROOT/'iso/build.sh').read_text())
+        self.assertIn('plymouth-themes',(ROOT/'iso/package-lists/desktop.list.chroot').read_text())
+
+    def test_installer_confirmation(self):
+        text=(ROOT/'iso/overlays/usr/local/bin/aevonyr-installer').read_text()
+        self.assertIn('kdialog --title',text)
+        self.assertIn('exec pkexec /usr/bin/calamares',text)
 
     def test_desktop_files(self):
         files = ROOT/'iso/overlays'
         self.assertIn('Exec=/usr/local/bin/aevonyr',(files/'etc/xdg/autostart/aevonyr-os.desktop').read_text())
-        self.assertIn('Exec=pkexec /usr/bin/calamares',(files/'usr/share/applications/aevonyr-install.desktop').read_text())
+        self.assertIn('Exec=/usr/local/bin/aevonyr-installer',(files/'usr/share/applications/aevonyr-install.desktop').read_text())
 
 if __name__=='__main__':
     unittest.main()

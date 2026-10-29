@@ -42,7 +42,17 @@
     "network_portal": "Sign-in portal required",
     "network_none": "Offline",
     "network_unknown": "Unknown",
-    "network_unavailable": "NetworkManager unavailable"
+    "network_unavailable": "NetworkManager unavailable",
+    "system": "System Health",
+    "system_desc": "Actual Linux, internet and compatibility diagnostics.",
+    "copy_diagnostics": "Copy diagnostic report",
+    "report_copied": "Diagnostic report copied.",
+    "session_actions": "Session & power",
+    "action_lock": "Lock screen",
+    "action_logout": "Log out",
+    "action_reboot": "Restart",
+    "action_poweroff": "Shut down",
+    "confirm_action": "Confirm"
   },
   "cs": {
     "home": "Domů",
@@ -87,7 +97,17 @@
     "network_portal": "Síť vyžaduje přihlášení",
     "network_none": "Odpojeno",
     "network_unknown": "Neznámý stav",
-    "network_unavailable": "NetworkManager není dostupný"
+    "network_unavailable": "NetworkManager není dostupný",
+    "system": "Stav systému",
+    "system_desc": "Skutečné informace o Linuxu, internetu a kompatibilitě.",
+    "copy_diagnostics": "Kopírovat diagnostiku",
+    "report_copied": "Diagnostika zkopírována.",
+    "session_actions": "Relace a napájení",
+    "action_lock": "Zamknout",
+    "action_logout": "Odhlásit",
+    "action_reboot": "Restartovat",
+    "action_poweroff": "Vypnout",
+    "confirm_action": "Potvrdit"
   },
   "sk": {
     "home": "Domov",

@@ -11,6 +11,7 @@ firmware-realtek
 task-kde-desktop
 plasma-workspace
 plasma-nm
+kdialog
 sddm
 qml6-module-qtquick-controls
 qml6-module-qtquick-layouts
@@ -39,6 +40,7 @@ wget
 ca-certificates
 pipewire-audio
 plymouth
+plymouth-themes
 plymouth-theme-breeze
 kde-config-plymouth
 wireplumber

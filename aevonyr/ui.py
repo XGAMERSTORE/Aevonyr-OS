@@ -11,6 +11,8 @@ from .compat import CompatibilityError, backend_status, make_plan, execute_plan,
 from .config import load_preferences, save_preferences, notes_path
 from .i18n import LANGUAGES, tr, install_language_pack
 from .network import network_status, open_network_settings
+from .diagnostics import diagnose, format_report
+from .session import execute_action, SessionError
 
 BG = "#100e1c"
 SIDE = "#191528"
@@ -28,7 +30,7 @@ class AevonyrDesktop(tk.Tk):
         self.language = self.preferences["language"]
         self.current_page = "home"
         self.current_dir = Path.home()
-        self.title("Aevonyr OS 0.7.1")
+        self.title("Aevonyr OS 0.7.2")
         self.geometry("1140x730")
         self.minsize(780, 520)
         self.configure(bg=BG)
@@ -78,7 +80,7 @@ class AevonyrDesktop(tk.Tk):
         for child in self.nav.winfo_children():
             child.destroy()
         for page, icon in (("home", "⌂"), ("apps", "◇"), ("files", "▣"),
-                           ("network", "◉"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
+                           ("network", "◉"), ("system", "◈"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
             selected = page == self.current_page
             button = self._button(self.nav, f" {icon}   {self.t(page)}",
                                   lambda p=page: self.show(p),
@@ -110,7 +112,7 @@ class AevonyrDesktop(tk.Tk):
             child.destroy()
         {
             "home": self.home_page, "apps": self.apps_page, "files": self.files_page,
-            "network": self.network_page, "notes": self.notes_page, "settings": self.settings_page,
+            "network": self.network_page, "system": self.system_page, "notes": self.notes_page, "settings": self.settings_page,
             "about": self.about_page
         }[page]()
 
@@ -145,6 +147,31 @@ class AevonyrDesktop(tk.Tk):
         try:
             open_network_settings()
         except (RuntimeError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
+
+    def system_page(self):
+        self._label(self.body, self.t("system_desc"), 12, MUTED).pack(anchor="w", pady=(0, 16))
+        details = diagnose()
+        card = tk.Frame(self.body, bg=PANEL, highlightbackground="#59416c", highlightthickness=1)
+        card.pack(fill="both", expand=True, pady=(0, 14))
+        self._label(card, format_report(details), 12, INK, False, PANEL).pack(
+            anchor="w", padx=20, pady=25)
+        self._button(self.body, self.t("copy_diagnostics"),
+                     lambda: self._copy_report(format_report(details))).pack(anchor="w")
+
+    def _copy_report(self, report):
+        self.clipboard_clear()
+        self.clipboard_append(report)
+        self.update()
+        messagebox.showinfo("Aevonyr OS", self.t("report_copied"))
+
+    def _session_action(self, action):
+        if action != "lock" and not messagebox.askyesno(
+                "Aevonyr OS", self.t("confirm_action") + " " + self.t("action_" + action) + "?"):
+            return
+        try:
+            execute_action(action)
+        except (SessionError, OSError) as exc:
             messagebox.showerror("Aevonyr OS", str(exc))
 
     def apps_page(self):
@@ -277,6 +304,13 @@ class AevonyrDesktop(tk.Tk):
         chooser.bind("<<ComboboxSelected>>", self._select_language)
         self._label(self.body, self.t("language_note"), 10, MUTED).pack(anchor="w")
         self._button(self.body, self.t("import_language"), self._import_language).pack(anchor="w", pady=(21, 0))
+        self._label(self.body, self.t("session_actions"), 17, INK, True).pack(anchor="w", pady=(22, 12))
+        actions = tk.Frame(self.body, bg=BG)
+        actions.pack(anchor="w")
+        for action in ("lock", "logout", "reboot", "poweroff"):
+            self._button(actions, self.t("action_" + action),
+                         lambda selected=action: self._session_action(selected)).pack(
+                side="left", padx=(0, 9))
 
     def _import_language(self):
         path = filedialog.askopenfilename(title=self.t("import_language"), filetypes=[("JSON language pack", "*.json")])
@@ -305,7 +339,7 @@ class AevonyrDesktop(tk.Tk):
                 break
 
     def about_page(self):
-        self._label(self.body, "Aevonyr OS 0.7.1 Linux Live", 22, INK, True).pack(anchor="w", pady=(0, 14))
+        self._label(self.body, "Aevonyr OS 0.7.2 Linux Live", 22, INK, True).pack(anchor="w", pady=(0, 14))
         self._label(self.body, self.t("about_desc"), 12, MUTED).pack(anchor="w", pady=(0, 14))
         self._label(self.body, f"Python {platform.python_version()}  •  {platform.system()}",
                     11, MUTED).pack(anchor="w")

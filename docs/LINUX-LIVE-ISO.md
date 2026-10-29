@@ -42,3 +42,13 @@ No technology can guarantee compatibility with every Windows/Android application
 - Real NetworkManager connectivity page and native Wi-Fi/Ethernet connection editor; no secrets stored by the custom shell.
 - KDE Breeze Plymouth graphical boot splash and `quiet splash` boot options; original Aevonyr boot animation is a future milestone.
 - New regression tests. A built ISO is **not yet proof of VirtualBox boot, SDDM theme operation or app compatibility**.
+
+## Release candidate 0.7.2
+- Aevonyr Eclipse script animation during boot and shutdown (including a masked disk password prompt).
+- Fixed missing custom chroot hook copy in live-build.
+- Aevonyr System Health pane and `aevonyr --diagnose` CLI (NetworkManager, Wine, Waydroid, available disk space, current kernel).
+- KDE/systemd lock, logout, restart and shutdown actions with UI confirmation before ending the session.
+- Extra installer warning before launching Calamares. **Do not attempt physical installation before virtual-machine verification and backups.**
+- Build output has a versioned filename `Aevonyr-OS-0.7.2-Linux-Live-amd64.iso`.
+
+Actual boot, password prompt behavior, installer and EXE/APK functionality must still be tested in a VM; building the ISO alone is not sufficient.
