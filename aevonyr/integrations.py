@@ -51,7 +51,7 @@ def paired_device_count(which=shutil.which, run=subprocess.run):
     if not binary:
         return None
     try:
-        response = run([binary, "--list-devices", "--id-only"], capture_output=True,
+        response = run([binary, "--list-available", "--id-only"], capture_output=True,
                        text=True, timeout=6, check=False)
     except (OSError, subprocess.TimeoutExpired):
         return None

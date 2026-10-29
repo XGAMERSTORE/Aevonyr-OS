@@ -66,7 +66,7 @@ class IntegrationsTests(unittest.TestCase):
     def test_count_devices_without_exposing_ids(self):
         run = Mock(return_value=Mock(returncode=0,stdout="aaabbb\ncccddd\n"))
         self.assertEqual(paired_device_count(which=self.lookup, run=run),2)
-        run.assert_called_once_with(["/usr/bin/kdeconnect-cli", "--list-devices",
+        run.assert_called_once_with(["/usr/bin/kdeconnect-cli", "--list-available",
                                      "--id-only"],capture_output=True,text=True,
                                     timeout=6,check=False)
         self.assertIsNone(paired_device_count(which=lambda _:None))
