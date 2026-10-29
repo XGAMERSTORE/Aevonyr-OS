@@ -52,3 +52,11 @@ No technology can guarantee compatibility with every Windows/Android application
 - Build output has a versioned filename `Aevonyr-OS-0.7.2-Linux-Live-amd64.iso`.
 
 Actual boot, password prompt behavior, installer and EXE/APK functionality must still be tested in a VM; building the ISO alone is not sufficient.
+
+## Aevonyr 0.8.0 milestone
+- Flatpak, KDE Discover Flatpak integration and opt-in Flathub app installs.
+- Aevonyr fullscreen launcher, KDE launcher entries, and first-login Eclipse color scheme.
+- Timeshift system snapshot GUI for installed systems; Back In Time personal backup GUI.
+- Live mode disables Timeshift management in the Aevonyr UI.
+- Target output: dist/Aevonyr-OS-0.8.0-Linux-Live-amd64.iso.
+- Actual VM boot, installs and recovery need manual verification even when the build succeeds.
