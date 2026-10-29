@@ -10,6 +10,7 @@ Aevonyr OS is a custom desktop project with an English-first interface, multilin
 
 - English is the default UI language. Settings can switch immediately between 10 starter languages: English, Czech, Slovak, German, Polish, French, Spanish, Italian, Portuguese, and Ukrainian.
 - Language packs are intentionally at different stages of completion; missing strings fall back to English.
+- Community JSON language packs can be imported from Settings or the CLI without rebuilding Aevonyr.
 - Dark-violet desktop shell with navigation, a file browser, persistent notes and runtime status.
 - Optional Wine integration for Windows EXE/MSI launch, if Wine is installed.
 - Optional Waydroid integration for Android APK installation, if Waydroid is installed, initialized and running in Wayland.
@@ -22,6 +23,11 @@ Use Python 3.10+ and Tkinter. On Debian or Ubuntu install Python and Tkinter usi
 Clone this repository and open a terminal in its root directory, then run:
 
     python3 -m aevonyr
+
+To list languages or install a sample Dutch language pack:
+
+    python3 -m aevonyr --languages
+    python3 -m aevonyr --install-language language-packs/nl-NL.json
 
 To see which compatibility backends are installed:
 

@@ -29,7 +29,9 @@
     "saved": "Notes saved.",
     "language": "Interface language",
     "language_note": "Language changes apply immediately. Missing translations display in English.",
-    "about_desc": "Experimental desktop shell on Linux. Not yet a bootable ISO or a standalone operating system."
+    "about_desc": "Experimental desktop shell on Linux. Not yet a bootable ISO or a standalone operating system.",
+    "import_language": "Import language pack…",
+    "language_installed": "Language pack installed. The interface has switched."
   },
   "cs": {
     "home": "Domů",
@@ -61,7 +63,9 @@
     "saved": "Poznámky uloženy.",
     "language": "Jazyk rozhraní",
     "language_note": "Jazyk se změní ihned. Chybějící překlady jsou anglicky.",
-    "about_desc": "Experimentální desktop Linuxu, zatím ne samostatný OS ani ISO."
+    "about_desc": "Experimentální desktop Linuxu, zatím ne samostatný OS ani ISO.",
+    "import_language": "Importovat jazykový balíček…",
+    "language_installed": "Jazykový balíček byl nainstalován. Rozhraní se přepnulo."
   },
   "sk": {
     "home": "Domov",
