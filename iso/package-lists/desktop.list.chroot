@@ -24,6 +24,7 @@ nm-connection-editor
 firefox-esr
 plasma-discover
 plasma-discover-backend-flatpak
+xdg-desktop-portal-kde
 flatpak
 libglib2.0-bin
 kde-cli-tools
