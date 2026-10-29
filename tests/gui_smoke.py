@@ -7,6 +7,10 @@ import os
 from pathlib import Path
 import tempfile
 import time
+import sys
+
+# Direct execution starts with tests/ on sys.path, not repository root.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 
 def smoke():
