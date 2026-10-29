@@ -1,0 +1,12 @@
+#!/bin/sh
+# One-time KDE colors. Never override a user's later customization.
+set -eu
+STATE="$HOME/.local/state/aevonyr"
+MARKER="$STATE/colors-applied-v1"
+[ ! -f "$MARKER" ] || exit 0
+command -v plasma-apply-colorscheme >/dev/null 2>&1 || exit 0
+mkdir -p "$STATE"
+if plasma-apply-colorscheme AevonyrEclipse >/dev/null 2>&1; then
+    : > "$MARKER"
+fi
+exit 0
