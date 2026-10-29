@@ -9,7 +9,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from .compat import CompatibilityError, backend_status, make_plan, execute_plan, open_android
 from .config import load_preferences, save_preferences, notes_path
-from .i18n import LANGUAGES, tr
+from .i18n import LANGUAGES, tr, install_language_pack
 
 BG = "#100e1c"
 SIDE = "#191528"
@@ -262,6 +262,21 @@ class AevonyrDesktop(tk.Tk):
         chooser.pack(anchor="w", pady=(0, 15))
         chooser.bind("<<ComboboxSelected>>", self._select_language)
         self._label(self.body, self.t("language_note"), 10, MUTED).pack(anchor="w")
+        self._button(self.body, self.t("import_language"), self._import_language).pack(anchor="w", pady=(21, 0))
+
+    def _import_language(self):
+        path = filedialog.askopenfilename(title=self.t("import_language"), filetypes=[("JSON language pack", "*.json")])
+        if not path:
+            return
+        try:
+            code = install_language_pack(path)
+            self.language = code
+            self.preferences["language"] = code
+            save_preferences(self.preferences)
+            self.show("settings")
+            messagebox.showinfo("Aevonyr OS", self.t("language_installed"))
+        except (ValueError, OSError, UnicodeError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
 
     def _select_language(self, _event):
         for code, name in LANGUAGES.items():

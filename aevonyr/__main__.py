@@ -1,12 +1,28 @@
 """Entry point: python3 -m aevonyr."""
 import argparse
 from .compat import backend_status, make_plan, execute_plan, CompatibilityError
+from .i18n import LANGUAGES, CATALOG, install_language_pack
 
 def main():
     parser = argparse.ArgumentParser(description="Aevonyr OS desktop preview")
     parser.add_argument("--check", action="store_true", help="check runtime availability")
     parser.add_argument("--launch", metavar="FILE", help="launch EXE/MSI or install APK")
+    parser.add_argument("--languages", action="store_true", help="list installed interface languages")
+    parser.add_argument("--install-language", metavar="JSON", help="install a community language pack")
     args = parser.parse_args()
+    if args.languages:
+        count = len(CATALOG["en"])
+        for code, name in sorted(LANGUAGES.items()):
+            filled = sum(bool(CATALOG[code].get(key)) for key in CATALOG["en"])
+            print(f"{code:10} {name} — {filled}/{count} translated labels")
+        return 0
+    if args.install_language:
+        try:
+            code = install_language_pack(args.install_language)
+        except (ValueError, OSError, UnicodeError) as exc:
+            parser.exit(1, f"Language pack error: {exc}\n")
+        print(f"Installed language pack: {code}")
+        return 0
     if args.check:
         for key, value in backend_status().items():
             print(f"{key}: {'available' if value else 'unavailable'}")

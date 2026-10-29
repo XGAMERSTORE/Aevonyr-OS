@@ -1,0 +1,22 @@
+{
+  "locale": "nl-NL",
+  "name": "Nederlands",
+  "strings": {
+    "home": "Start",
+    "apps": "Toepassingen",
+    "files": "Bestanden",
+    "notes": "Notities",
+    "settings": "Instellingen",
+    "about": "Over",
+    "welcome": "Welkom bij Aevonyr OS",
+    "tagline": "Eén systeem. Twee werelden.",
+    "windows": "Windows-toepassingen",
+    "android": "Android-toepassingen",
+    "choose_exe": "Kies EXE / MSI",
+    "choose_apk": "Installeer APK",
+    "open_android": "Open Android",
+    "language": "Interfacetaal",
+    "import_language": "Taalpakket importeren…",
+    "language_installed": "Taalpakket geïnstalleerd."
+  }
+}
