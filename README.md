@@ -2,57 +2,56 @@
 
 **One System. Two Worlds.**
 
-Aevonyr OS is a custom Linux distribution project built on Debian 13, KDE Plasma/Wayland, Wine and optional Waydroid. It is an experimental PC operating system project, not a certified Windows/Android replacement or a finished commercial OS.
+Aevonyr OS is an experimental **Debian 13-based Linux Live distribution** with KDE Plasma, Wayland, a custom Aevonyr interface, Wine and optional Waydroid. It is not a new kernel or a Windows/Android replacement.
 
-**Development status:** Version 0.8.0 adds a fullscreen application launcher, a Universal App Hub and separate System Restore and personal backup tools. GitHub Actions has built previous 0.7.x Linux ISO images successfully, but this 0.8 candidate requires its own full build and VirtualBox boot testing.
+## Aevonyr 0.9 — Project Eclipse
 
-## Download and test the ISO
+This experimental development release adds:
+- **Aevonyr Welcome:** first-login graphical wizard in Czech and English. Covers language, internet, application store, KDE Connect phone pairing and backups. Finishing writes a minimal local completion flag so the wizard doesn't repeatedly appear.
+- **Aevonyr Updates:** opens KDE Discover to review Linux/Flatpak updates and eligible device firmware through fwupd. Nothing is installed without the user's approval.
+- **Aevonyr Phone Link:** uses KDE Connect for local device pairing. Shows count of connected paired devices without storing device IDs.
+- **Better navigation:** scrollable left navigation, quick links and Live mode warnings.
+- **Branded Eclipse desktop:** existing Aevonyr color scheme, wallpaper, animated SDDM login and Plymouth splash.
+- Previous 0.8 features: Universal App Hub, fullscreen launcher, Timeshift System Restore and Back In Time personal backups.
 
-Open the [Linux ISO build workflow](https://github.com/XGAMERSTORE/Aevonyr-OS/actions/workflows/build-linux-iso.yml). Open the latest successful build, download the artifact ZIP and extract the ISO and SHA256SUMS. Verify its checksum before booting in a new empty VirtualBox VM.
+**Important limits:** Aevonyr still uses KDE Plasma as its compositor. Android requires Waydroid initialization, supported Linux kernel features and Wayland. Wine doesn't run every Windows application. Timeshift snapshots are not a substitute for external backups. ISO assembly does not prove graphical boot or installer safety.
 
-Do not confuse the multi-gigabyte Linux Live ISO with the old 17 MB UEFI preview.
+## ISO downloads
 
-## Aevonyr 0.8 features
+Open [GitHub Actions — Aevonyr Linux ISO](https://github.com/XGAMERSTORE/Aevonyr-OS/actions/workflows/build-linux-iso.yml), select the most recent **successful** run and download its Artifact ZIP. The target for Project Eclipse is **Aevonyr-OS-0.9.0-Linux-Live-amd64.iso**; use a previous successful 0.8 image if the 0.9 build isn't green.
 
-- Real Linux kernel and drivers, KDE Plasma desktop, SDDM login, NetworkManager and Firefox ESR.
-- Branded Aevonyr Eclipse color scheme, wallpaper, login screen and boot/shutdown animation.
-- **Aevonyr Launcher:** fullscreen search and launch for installed native Linux, Flatpak and Android apps. Uses KDE for window management.
-- **Universal App Hub:** browse and launch installed Linux, Flatpak and Waydroid apps; install a user-approved Flatpak from a curated selection; enable Flathub explicitly when needed.
-- Windows EXE/MSI opening through Wine, APK installation through Waydroid. Not all Windows/Android applications are compatible.
-- **System Restore:** Timeshift GUI for system snapshots on installed Aevonyr systems and Back In Time for personal documents/photos/projects.
-- File browser, notes, diagnostics, languages, network settings and KDE session actions.
-- Calamares graphical installer; only test disk installation on a disposable virtual machine until validated.
+Unzip, verify SHA256SUMS, and test in a fresh empty VirtualBox VM first. Never select a physical disk containing important data.
 
-## Useful commands
+See [safe VM testing](docs/VIRTUALBOX-TEST.md).
 
-- aevonyr — Aevonyr desktop controls.
-- aevonyr --launcher — fullscreen search. Escape closes it.
-- aevonyr --app-hub — Universal App Hub.
-- aevonyr --restore — system snapshots and user backups.
-- aevonyr --diagnose — Linux runtime diagnostics.
-- aevonyr --languages — available interface languages.
+## Using the desktop
 
-The three new apps also have entries in the KDE application menu.
+Commands:
+- `aevonyr` — main app.
+- `aevonyr --welcome` — first-run guide (can be reopened).
+- `aevonyr --updates` — software and firmware management.
+- `aevonyr --phone` — KDE Connect.
+- `aevonyr --launcher` — fullscreen application search.
+- `aevonyr --app-hub` — native/Flatpak/Android app hub.
+- `aevonyr --restore` — Timeshift/Back In Time tools.
+- `aevonyr --diagnose` — local system diagnostics.
 
-## Safety
+KDE itself provides the real Wi-Fi/Ethernet, files, power, package management and system settings. The Aevonyr application provides a branded entry point rather than replacing those services.
 
-System snapshots and user backups are different things. Timeshift excludes personal user files by default. Aevonyr requires explicit user action before enabling Flathub, installing apps or opening restore tools, and prevents launching system restore from the temporary Live environment. No disk is automatically formatted or restored.
+## Building
 
-Our KDE app/launcher does **not** replace the Plasma compositor. The build pipeline validates the generated ISO structure, but actual boot, login, disk-installation safety, graphics and compatibility still need testing.
+On Debian 13 with root permission, internet and plenty of disk space:
 
-See [the App Hub and Restore guide](docs/APP-HUB-RESTORE.md), [Linux ISO builder](docs/LINUX-LIVE-ISO.md), [VirtualBox test guide](docs/VIRTUALBOX-TEST.md) and [roadmap](docs/ROADMAP.md).
+```sh
+apt-get update
+apt-get install -y live-build debootstrap squashfs-tools xorriso grub-efi-amd64-bin grub-pc-bin
+sudo ./iso/build.sh
+```
 
-## Build
+The build generates `dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso` plus SHA256SUMS.
 
-On Debian 13 with enough disk space, internet and root permission, install live-build, debootstrap, squashfs-tools, xorriso, grub-efi-amd64-bin and grub-pc-bin. Then run:
+Run source tests locally with `python3 -m unittest discover -s tests -v` and `python3 -m compileall -q aevonyr`.
 
-    sudo ./iso/build.sh
+See [Eclipse feature guide](docs/PROJECT-ECLIPSE.md), [build notes](docs/LINUX-LIVE-ISO.md), [compatibility roadmap](docs/ROADMAP.md) and [VirtualBox instructions](docs/VIRTUALBOX-TEST.md).
 
-Output target: dist/Aevonyr-OS-0.8.0-Linux-Live-amd64.iso and dist/SHA256SUMS.
-
-Python tests:
-
-    python3 -m unittest discover -s tests -v
-    python3 -m compileall -q aevonyr
-
-Third-party software retains its respective upstream licensing and distribution obligations. An Aevonyr project license is still to be decided before general release.
+Third-party projects retain their own licenses. Before a public stable release, Aevonyr also needs a clearly documented project license, security/update policy and complete installation and hardware testing.

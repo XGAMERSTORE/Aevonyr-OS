@@ -22,6 +22,9 @@ jobs:
           python3 -m compileall -q aevonyr
           bash -n iso/build.sh
           bash -n iso/overlays/usr/local/bin/aevonyr-android-setup
+          bash -n iso/overlays/usr/local/bin/aevonyr-installer
+          bash -n iso/overlays/usr/local/bin/aevonyr-colorscheme-init
+          bash -n iso/hooks/normal/0100-aevonyr-splash.hook.chroot
       - name: Free disk on ephemeral runner
         run: |
           sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/hostedtoolcache || true
@@ -40,14 +43,22 @@ jobs:
           '
       - name: Verify image
         run: |
-          test -s dist/Aevonyr-OS-0.8.0-Linux-Live-amd64.iso
+          test -s dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso
           (cd dist && sha256sum -c SHA256SUMS)
           file dist/*.iso
+          # Check that both optical boot records and Linux live filesystem exist.
+          docker run --rm -v "$GITHUB_WORKSPACE/dist:/dist:ro" debian:trixie bash -euc '
+            apt-get update >/dev/null
+            apt-get install -y --no-install-recommends xorriso >/dev/null
+            xorriso -indev /dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso -report_el_torito plain               | tee /tmp/boot-report.txt
+            grep -Eq "BIOS|UEFI|EFI" /tmp/boot-report.txt
+            xorriso -indev /dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso -find /live               -type f -name "*.squashfs" -print               | grep -q squashfs
+          '
           ls -lh dist/*.iso
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: aevonyr-os-0.8.0-linux-live-amd64
+          name: aevonyr-os-0.9.0-linux-live-amd64
           path: |
             dist/*.iso
             dist/SHA256SUMS

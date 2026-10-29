@@ -24,6 +24,10 @@ nm-connection-editor
 firefox-esr
 plasma-discover
 plasma-discover-backend-flatpak
+plasma-discover-backend-fwupd
+packagekit
+fwupd
+kdeconnect
 xdg-desktop-portal-kde
 flatpak
 libglib2.0-bin

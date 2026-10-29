@@ -1,26 +1,29 @@
-# Aevonyr OS — development roadmap
+# Aevonyr OS roadmap
 
-This roadmap is a plan, not a claim that the features are fully tested.
+## 0.8 — Universal Apps (Linux image successfully built)
+- Aevonyr Launcher with searchable installed Linux, Flatpak and Waydroid apps.
+- Opt-in Flathub and interactive installs, Wine/Waydroid launch paths.
+- Timeshift for system snapshots and Back In Time for separate personal backups.
+- KDE Eclipse palette and branding.
 
-## 0.8.0 — App Hub, branded launcher and recovery (in development)
-- Fullscreen Aevonyr Launcher, integrated into the KDE applications menu.
-- Universal App Hub listing installed native, Flatpak and Waydroid apps.
-- Optional Flathub integration, per-user interactive installations and KDE Discover Flatpak backend.
-- Timeshift system snapshots for installed Linux systems, Back In Time for user data.
-- Eclipse KDE color scheme, wallpaper, boot and login presentation.
-- Remaining: ISO assembly validation, VirtualBox smoke tests, app installation tests, snapshot/backup recovery.
+## 0.9 — Project Eclipse (currently in development)
+- First-run wizard in Czech and English (language, network, apps, phone, backup).
+- KDE Discover update access with PackageKit, Flatpak and fwupd integration.
+- KDE Connect phone pairing, non-sensitive reachability count.
+- Better small-screen navigation and Live mode status.
+- More thorough image checks for boot records and Linux filesystem.
+- Remaining: ISO assembly success, GUI boot and functionality tests.
 
-## 0.9 — Universal compatibility and gaming
-- Per-app Wine environments, Bottles integration, logs and application shortcuts.
-- Supported Android app store, runtime initialization flow and update actions.
-- Steam/Proton integration, graphics driver diagnostics and game compatibility tests.
-- KDE Connect integration and more native desktop shell behavior.
+## 0.9.x — Reliability
+- Actual QEMU/VirtualBox boot tests, desktop/login smoke checks and installer tests on disposable virtual disks.
+- Snapshot recovery, data-backup restore drills, encrypted disk layouts.
+- Hardware/firmware and device driver compatibility testing.
+- Better Wine per-application environment management and Waydroid initialization UX.
 
-## 1.0 — Reliable daily-use release candidate
-- Automatic QEMU/VirtualBox boot, desktop and installer smoke tests.
-- Tested disk encryption, restore and personal backups on real partition layouts.
-- A documented upgrade/update process with tested rollback or recovery strategy.
-- Hardware compatibility testing, reliable Wi-Fi, GPU, firmware and power controls.
-- Security policy, accessibility, complete translations, licenses and official release support.
+## 1.0 — Supported OS candidate
+- Secure and tested update path; recovery/rollback design.
+- Explicit license and redistribution inventory; support lifecycle.
+- Accessibility, localization, privacy and security audit.
+- User documentation and regular hardware regression tests.
 
-Aevonyr 0.8 uses KDE Plasma as its Wayland compositor; developing an independent compositor would be a separate larger project.
+Current Aevonyr uses the **KDE Plasma compositor** rather than a custom standalone Wayland compositor. This is intentional until the Linux distribution is reliable enough.

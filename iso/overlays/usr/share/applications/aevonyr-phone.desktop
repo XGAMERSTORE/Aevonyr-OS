@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Phone Link
+Comment=Connect your phone through KDE Connect
+Exec=/usr/local/bin/aevonyr --phone
+Icon=phone
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true
