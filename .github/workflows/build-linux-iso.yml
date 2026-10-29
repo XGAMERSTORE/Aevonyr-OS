@@ -21,6 +21,7 @@ jobs:
           python3 -m unittest discover -s tests -v
           python3 -m compileall -q aevonyr
           bash -n iso/build.sh
+          bash -n scripts/qemu-screenshots.sh
           bash -n iso/overlays/usr/local/bin/aevonyr-android-setup
           bash -n iso/overlays/usr/local/bin/aevonyr-installer
           bash -n iso/overlays/usr/local/bin/aevonyr-colorscheme-init
@@ -43,26 +44,49 @@ jobs:
           '
       - name: Verify image
         run: |
-          test -s dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso
+          test -s dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso
           (cd dist && sha256sum -c SHA256SUMS)
           file dist/*.iso
           # Check that both optical boot records and Linux live filesystem exist.
           docker run --rm -v "$GITHUB_WORKSPACE/dist:/dist:ro" debian:trixie bash -euc '
-            apt-get update >/dev/null
-            apt-get install -y --no-install-recommends xorriso >/dev/null
-            xorriso -indev /dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso -report_el_torito plain               | tee /tmp/boot-report.txt
-            grep -Eq "BIOS|UEFI|EFI" /tmp/boot-report.txt
-            xorriso -indev /dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso -find /live               -type f -name "*.squashfs" -print               | grep -q squashfs
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update -qq >/dev/null
+            apt-get install -y -qq --no-install-recommends xorriso >/dev/null
+            iso="/dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso"
+            xorriso -indev "$iso" -report_el_torito plain > /tmp/boot-report.txt
+            cat /tmp/boot-report.txt
+            grep -Eq "El Torito boot img.*BIOS" /tmp/boot-report.txt
+            grep -Eq "El Torito boot img.*UEFI" /tmp/boot-report.txt
+            xorriso -indev "$iso" -ls /live > /tmp/live-files.txt
+            cat /tmp/live-files.txt
+            grep -Eq "[.]squashfs" /tmp/live-files.txt
           '
           ls -lh dist/*.iso
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: aevonyr-os-0.9.0-linux-live-amd64
+          name: aevonyr-os-1.0.0-eclipse-live-amd64
           path: |
             dist/*.iso
             dist/SHA256SUMS
           compression-level: 0
+          retention-days: 14
+      - name: Experimental BIOS and UEFI QEMU screenshots (non-blocking)
+        if: success()
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf socat
+          bash scripts/qemu-screenshots.sh "dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso" "dist/boot-screens"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aevonyr-1.0-boot-screenshots
+          path: |
+            dist/boot-screens/*.ppm
+            dist/boot-screens/*-qemu.log
+            dist/boot-screens/*-serial.log
+          if-no-files-found: ignore
           retention-days: 14
       - uses: actions/upload-artifact@v4
         if: failure()
