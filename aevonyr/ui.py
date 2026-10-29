@@ -20,6 +20,9 @@ from .apphub import (
     enable_flathub_command, install_flatpak_command, start,
 )
 from .restore import RestoreError, is_live_boot, restore_command, backup_command, start_tool
+from .onboarding import completed
+from .integrations import IntegrationError, available_tools, paired_device_count
+from .integrations import start_tool as start_integration
 
 BG = "#100e1c"
 SIDE = "#191528"
@@ -37,13 +40,14 @@ class AevonyrDesktop(tk.Tk):
         self.language = self.preferences["language"]
         self.current_page = "home"
         self.current_dir = Path.home()
-        self.title("Aevonyr OS 0.8.0")
+        self.title("Aevonyr OS 0.9.0 — Project Eclipse")
         self.geometry("1140x730")
         self.minsize(780, 520)
         self.configure(bg=BG)
         self._create_shell()
         self.show("home")
         self.after(1000, self._tick)
+        self.after(750, self._maybe_welcome)
 
     def t(self, key):
         return tr(key, self.language)
@@ -87,12 +91,12 @@ class AevonyrDesktop(tk.Tk):
         for child in self.nav.winfo_children():
             child.destroy()
         for page, icon in (("home", "⌂"), ("apps", "◇"), ("files", "▣"),
-                           ("network", "◉"), ("system", "◈"), ("restore", "◷"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
+                           ("network", "◉"), ("updates", "↻"), ("phone", "▤"), ("system", "◈"), ("restore", "◷"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
             selected = page == self.current_page
             button = self._button(self.nav, f" {icon}   {self.t(page)}",
                                   lambda p=page: self.show(p),
                                   PANEL2 if selected else SIDE)
-            button.configure(anchor="w", fg=INK if selected else MUTED, pady=14)
+            button.configure(anchor="w", fg=INK if selected else MUTED, pady=7, font=("DejaVu Sans", 9, "bold"))
             button.pack(fill="x", pady=3)
 
     def _render_header(self):
@@ -119,7 +123,7 @@ class AevonyrDesktop(tk.Tk):
             child.destroy()
         {
             "home": self.home_page, "apps": self.apps_page, "files": self.files_page,
-            "network": self.network_page, "system": self.system_page, "restore": self.restore_page, "notes": self.notes_page, "settings": self.settings_page,
+            "network": self.network_page, "updates": self.updates_page, "phone": self.phone_page, "system": self.system_page, "restore": self.restore_page, "notes": self.notes_page, "settings": self.settings_page,
             "about": self.about_page
         }[page]()
 
@@ -145,7 +149,90 @@ class AevonyrDesktop(tk.Tk):
         row = tk.Frame(self.body, bg=BG)
         row.pack(fill="x", pady=(16, 0))
         self._button(row, self.t("app_hub"), lambda: self.show("apps")).pack(side="left", padx=(0, 12))
-        self._button(row, self.t("restore"), lambda: self.show("restore")).pack(side="left")
+        self._button(row, self.t("restore"), lambda: self.show("restore")).pack(side="left", padx=(0, 9))
+        self._button(row, self.t("updates"), lambda: self.show("updates")).pack(side="left")
+
+    def _maybe_welcome(self):
+        if not completed():
+            self.show_welcome()
+
+    def show_welcome(self):
+        if getattr(self, "_wizard", None) is not None:
+            try:
+                if self._wizard.winfo_exists():
+                    self._wizard.lift()
+                    self._wizard.focus_force()
+                    return
+            except tk.TclError:
+                pass
+        from .welcome import WelcomeWizard
+        self._wizard = WelcomeWizard(self)
+
+    def _open_kde_tool(self, key):
+        try:
+            start_integration(key)
+        except (IntegrationError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
+
+    def updates_page(self):
+        self._label(self.body, self.t("updates_desc"), 12, MUTED).pack(anchor="w", pady=(0, 20))
+        tools = available_tools()
+        self._label(self.body, self.t("updates_manager") + ": " +
+                    (self.t("ready") if tools["updates"] else self.t("missing")),
+                    13, INK, True).pack(anchor="w", pady=(0, 15))
+        row = tk.Frame(self.body, bg=BG)
+        row.pack(fill="x")
+        self._card(row, self.t("software_updates"), self.t("software_updates_desc"),
+                   lambda: self._open_kde_tool("updates"),
+                   self.t("open_updates")).pack(side="left", expand=True, fill="both", padx=(0, 10))
+        self._card(row, self.t("firmware_updates"), self.t("firmware_updates_desc"),
+                   lambda: self._open_kde_tool("updates"),
+                   self.t("open_updates")).pack(side="left", expand=True, fill="both", padx=(10, 0))
+        self._label(self.body, self.t("updates_warning"), 10, MUTED).pack(
+            anchor="w", pady=(24, 10))
+        self._button(self.body, self.t("backup_first"),
+                     lambda: self.show("restore")).pack(anchor="w")
+
+    def phone_page(self):
+        self._label(self.body, self.t("phone_desc"), 12, MUTED).pack(anchor="w", pady=(0, 22))
+        tools = available_tools()
+        self._label(self.body, self.t("phone_manager") + ": " +
+                    (self.t("ready") if tools["phone"] else self.t("missing")),
+                    13, INK, True).pack(anchor="w", pady=(0, 16))
+        self._button(self.body, self.t("pair_phone"),
+                     lambda: self._open_kde_tool("phone")).pack(anchor="w", pady=(0, 13))
+        self.phone_status = self._label(self.body, self.t("checking_devices"), 11, MUTED)
+        self.phone_status.pack(anchor="w", pady=(4, 12))
+        self._button(self.body, self.t("refresh"), self._scan_devices).pack(anchor="w")
+        self._label(self.body, self.t("phone_privacy"), 10, MUTED).pack(anchor="w", pady=(25, 0))
+        self._scan_devices()
+
+    def _scan_devices(self):
+        if self.current_page != "phone":
+            return
+        status_queue = queue.Queue(maxsize=1)
+        self._phone_queue = status_queue
+        self.phone_status.configure(text=self.t("checking_devices"))
+        def read_only_probe():
+            try:
+                status_queue.put(paired_device_count())
+            except Exception:
+                status_queue.put(None)
+        threading.Thread(target=read_only_probe, daemon=True).start()
+        self.after(130, lambda: self._poll_devices(status_queue))
+
+    def _poll_devices(self, result_queue):
+        if self.current_page != "phone":
+            return
+        try:
+            count = result_queue.get_nowait()
+        except queue.Empty:
+            self.after(130, lambda: self._poll_devices(result_queue))
+            return
+        message = self.t("phone_unknown") if count is None else (
+            self.t("paired_devices") + ": " + str(count))
+        if self.phone_status.winfo_exists():
+            self.phone_status.configure(text=message)
 
     def network_page(self):
         self._label(self.body, self.t("network_desc"), 12, MUTED).pack(anchor="w", pady=(5, 23))
@@ -472,6 +559,8 @@ class AevonyrDesktop(tk.Tk):
         chooser.pack(anchor="w", pady=(0, 15))
         chooser.bind("<<ComboboxSelected>>", self._select_language)
         self._label(self.body, self.t("language_note"), 10, MUTED).pack(anchor="w")
+        self._button(self.body, self.t("open_welcome"), self.show_welcome).pack(
+            anchor="w", pady=(15, 0))
         self._button(self.body, self.t("import_language"), self._import_language).pack(anchor="w", pady=(21, 0))
         self._label(self.body, self.t("session_actions"), 17, INK, True).pack(anchor="w", pady=(22, 12))
         actions = tk.Frame(self.body, bg=BG)
@@ -508,7 +597,7 @@ class AevonyrDesktop(tk.Tk):
                 break
 
     def about_page(self):
-        self._label(self.body, "Aevonyr OS 0.8.0 Linux Live", 22, INK, True).pack(anchor="w", pady=(0, 14))
+        self._label(self.body, "Aevonyr OS 0.9.0 Linux Live — Project Eclipse", 22, INK, True).pack(anchor="w", pady=(0, 14))
         self._label(self.body, self.t("about_desc"), 12, MUTED).pack(anchor="w", pady=(0, 14))
         self._label(self.body, f"Python {platform.python_version()}  •  {platform.system()}",
                     11, MUTED).pack(anchor="w")

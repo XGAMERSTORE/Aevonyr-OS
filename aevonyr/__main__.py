@@ -9,6 +9,9 @@ def main():
     parser.add_argument("--check", action="store_true", help="check runtime availability")
     parser.add_argument("--launcher", action="store_true", help="open fullscreen Aevonyr launcher")
     parser.add_argument("--app-hub", action="store_true", help="open Universal App Hub")
+    parser.add_argument("--welcome", action="store_true", help="open Aevonyr first-run wizard")
+    parser.add_argument("--updates", action="store_true", help="open software and firmware update center")
+    parser.add_argument("--phone", action="store_true", help="open phone integration")
     parser.add_argument("--restore", action="store_true", help="open system restore and backup tools")
     parser.add_argument("--diagnose", action="store_true", help="show actual Linux system diagnostics")
     parser.add_argument("--launch", metavar="FILE", help="launch EXE/MSI or install APK")
@@ -53,6 +56,12 @@ def main():
         desktop.show("apps")
     elif args.restore:
         desktop.show("restore")
+    elif args.updates:
+        desktop.show("updates")
+    elif args.phone:
+        desktop.show("phone")
+    if args.welcome:
+        desktop.after(150, desktop.show_welcome)
     desktop.mainloop()
     return 0
 
