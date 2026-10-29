@@ -40,7 +40,7 @@ def diagnose(which=shutil.which, run=subprocess.run):
     except OSError:
         free = "Unknown"
     return {
-        "Aevonyr OS": "0.7.2 Linux",
+        "Aevonyr OS": "1.0.0 Eclipse Edition (test build)",
         "Linux kernel": platform.release(),
         "Session": os.environ.get("XDG_SESSION_TYPE") or "Unknown",
         "Boot mode": live_mode(),

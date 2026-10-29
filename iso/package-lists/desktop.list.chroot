@@ -23,6 +23,7 @@ nm-connection-editor
 # Desktop applications and Aevonyr Python desktop overlay
 firefox-esr
 plasma-discover
+plasma-systemmonitor
 plasma-discover-backend-flatpak
 plasma-discover-backend-fwupd
 packagekit
