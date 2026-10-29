@@ -11,7 +11,7 @@ class LiveBuildConfigTests(unittest.TestCase):
     def test_package_list(self):
         lines = (ROOT/'iso/package-lists/desktop.list.chroot').read_text().splitlines()
         packages = [x.strip() for x in lines if x.strip() and not x.lstrip().startswith('#')]
-        required = {'linux-image-amd64','task-kde-desktop','network-manager','firefox-esr','wine','waydroid','calamares-settings-debian','python3-tk','flatpak','plasma-discover-backend-flatpak','timeshift','backintime-qt','btrfs-progs'}
+        required = {'linux-image-amd64','task-kde-desktop','network-manager','firefox-esr','wine','waydroid','calamares-settings-debian','python3-tk','flatpak','plasma-discover-backend-flatpak','timeshift','backintime-qt','btrfs-progs','fwupd','plasma-discover-backend-fwupd','packagekit','kdeconnect'}
         self.assertTrue(required.issubset(set(packages)))
         self.assertEqual(len(packages),len(set(packages)))
     def test_branding(self):
@@ -48,7 +48,21 @@ class LiveBuildConfigTests(unittest.TestCase):
                       (root/'usr/share/color-schemes/AevonyrEclipse.colors').read_text())
         self.assertIn('plasma-apply-colorscheme AevonyrEclipse',
                       (root/'usr/local/bin/aevonyr-colorscheme-init').read_text())
-        self.assertIn('Aevonyr-OS-0.8.0-Linux-Live-amd64.iso', (ROOT/'iso/build.sh').read_text())
+        self.assertIn('Aevonyr-OS-0.9.0-Linux-Live-amd64.iso', (ROOT/'iso/build.sh').read_text())
+
+    def test_first_run_updates_phone_launchers(self):
+        applications = ROOT/'iso/overlays/usr/share/applications'
+        for filename, command in (
+            ('aevonyr-welcome.desktop','--welcome'),
+            ('aevonyr-updates.desktop','--updates'),
+            ('aevonyr-phone.desktop','--phone'),
+        ):
+            content=(applications/filename).read_text()
+            self.assertIn('Exec=/usr/local/bin/aevonyr ' + command,content)
+        packages=(ROOT/'iso/package-lists/desktop.list.chroot').read_text()
+        self.assertIn('kdeconnect',packages)
+        self.assertIn('plasma-discover-backend-fwupd',packages)
+        self.assertIn('fwupd',packages)
 
     def test_desktop_files(self):
         files = ROOT/'iso/overlays'

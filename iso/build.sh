@@ -20,7 +20,7 @@ lb config noauto \
   --debian-installer false \
   --iso-application "Aevonyr OS Live" \
   --iso-publisher "Aevonyr Studio" \
-  --iso-volume "AEVONYR_LIVE_080" \
+  --iso-volume "AEVONYR_LIVE_090" \
   --bootappend-live "boot=live components quiet splash username=user hostname=aevonyr locales=en_US.UTF-8 keyboard-layouts=us"
 mkdir -p config/package-lists config/includes.chroot/usr/lib/python3/dist-packages config/hooks/normal
 cp "$ROOT/iso/package-lists/desktop.list.chroot" config/package-lists/
@@ -34,6 +34,6 @@ echo "Building Aevonyr Linux live ISO; Debian downloads required"
 lb build 2>&1 | tee "$DIST/build.log"
 IMAGE="$(find . -maxdepth 1 -type f -name '*.iso' -print -quit)"
 if [[ -z "$IMAGE" ]]; then echo "No ISO produced" >&2; exit 1; fi
-cp "$IMAGE" "$DIST/Aevonyr-OS-0.8.0-Linux-Live-amd64.iso"
-(cd "$DIST" && sha256sum Aevonyr-OS-0.8.0-Linux-Live-amd64.iso > SHA256SUMS)
-ls -lh "$DIST/Aevonyr-OS-0.8.0-Linux-Live-amd64.iso"
+cp "$IMAGE" "$DIST/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso"
+(cd "$DIST" && sha256sum Aevonyr-OS-0.9.0-Linux-Live-amd64.iso > SHA256SUMS)
+ls -lh "$DIST/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso"
