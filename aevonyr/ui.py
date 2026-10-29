@@ -10,6 +10,7 @@ from tkinter import ttk, filedialog, messagebox
 from .compat import CompatibilityError, backend_status, make_plan, execute_plan, open_android
 from .config import load_preferences, save_preferences, notes_path
 from .i18n import LANGUAGES, tr, install_language_pack
+from .network import network_status, open_network_settings
 
 BG = "#100e1c"
 SIDE = "#191528"
@@ -27,7 +28,7 @@ class AevonyrDesktop(tk.Tk):
         self.language = self.preferences["language"]
         self.current_page = "home"
         self.current_dir = Path.home()
-        self.title("Aevonyr OS — Desktop Preview")
+        self.title("Aevonyr OS 0.7.1")
         self.geometry("1140x730")
         self.minsize(780, 520)
         self.configure(bg=BG)
@@ -77,7 +78,7 @@ class AevonyrDesktop(tk.Tk):
         for child in self.nav.winfo_children():
             child.destroy()
         for page, icon in (("home", "⌂"), ("apps", "◇"), ("files", "▣"),
-                           ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
+                           ("network", "◉"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
             selected = page == self.current_page
             button = self._button(self.nav, f" {icon}   {self.t(page)}",
                                   lambda p=page: self.show(p),
@@ -109,7 +110,7 @@ class AevonyrDesktop(tk.Tk):
             child.destroy()
         {
             "home": self.home_page, "apps": self.apps_page, "files": self.files_page,
-            "notes": self.notes_page, "settings": self.settings_page,
+            "network": self.network_page, "notes": self.notes_page, "settings": self.settings_page,
             "about": self.about_page
         }[page]()
 
@@ -132,6 +133,19 @@ class AevonyrDesktop(tk.Tk):
         label = "    •    ".join(f"{name}: {self.t('ready') if status[key] else self.t('missing')}"
                                 for name, key in (("Wine", "wine"), ("Waydroid", "waydroid")))
         self._label(self.body, label, 11, MUTED).pack(anchor="w", pady=(23, 0))
+
+    def network_page(self):
+        self._label(self.body, self.t("network_desc"), 12, MUTED).pack(anchor="w", pady=(5, 23))
+        self._label(self.body, self.t("network_status") + ": " + self.t("network_" + network_status()),
+                    16, INK, True).pack(anchor="w", pady=(0, 18))
+        self._button(self.body, self.t("network_settings"), self._open_network).pack(anchor="w", pady=(0, 13))
+        self._button(self.body, self.t("refresh"), lambda: self.show("network")).pack(anchor="w")
+
+    def _open_network(self):
+        try:
+            open_network_settings()
+        except (RuntimeError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
 
     def apps_page(self):
         self._label(self.body, self.t("choose_app"), 13, MUTED).pack(anchor="w", pady=(5, 21))
@@ -291,7 +305,7 @@ class AevonyrDesktop(tk.Tk):
                 break
 
     def about_page(self):
-        self._label(self.body, "Aevonyr OS 0.5-dev", 22, INK, True).pack(anchor="w", pady=(0, 14))
+        self._label(self.body, "Aevonyr OS 0.7.1 Linux Live", 22, INK, True).pack(anchor="w", pady=(0, 14))
         self._label(self.body, self.t("about_desc"), 12, MUTED).pack(anchor="w", pady=(0, 14))
         self._label(self.body, f"Python {platform.python_version()}  •  {platform.system()}",
                     11, MUTED).pack(anchor="w")

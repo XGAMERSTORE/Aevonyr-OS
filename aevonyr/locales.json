@@ -31,7 +31,18 @@
     "language_note": "Language changes apply immediately. Missing translations display in English.",
     "about_desc": "Experimental desktop shell on Linux. Not yet a bootable ISO or a standalone operating system.",
     "import_language": "Import language pack…",
-    "language_installed": "Language pack installed. The interface has switched."
+    "language_installed": "Language pack installed. The interface has switched.",
+    "network": "Network",
+    "network_desc": "Live Wi-Fi and Ethernet status from Linux NetworkManager.",
+    "network_status": "Connectivity",
+    "network_settings": "Open network settings",
+    "refresh": "Refresh",
+    "network_full": "Internet connected",
+    "network_limited": "Limited connectivity",
+    "network_portal": "Sign-in portal required",
+    "network_none": "Offline",
+    "network_unknown": "Unknown",
+    "network_unavailable": "NetworkManager unavailable"
   },
   "cs": {
     "home": "Domů",
@@ -65,7 +76,18 @@
     "language_note": "Jazyk se změní ihned. Chybějící překlady jsou anglicky.",
     "about_desc": "Experimentální desktop Linuxu, zatím ne samostatný OS ani ISO.",
     "import_language": "Importovat jazykový balíček…",
-    "language_installed": "Jazykový balíček byl nainstalován. Rozhraní se přepnulo."
+    "language_installed": "Jazykový balíček byl nainstalován. Rozhraní se přepnulo.",
+    "network": "Síť",
+    "network_desc": "Skutečný stav Wi-Fi a Ethernetu ze systémové služby NetworkManager.",
+    "network_status": "Připojení",
+    "network_settings": "Nastavení sítě",
+    "refresh": "Obnovit",
+    "network_full": "Internet připojen",
+    "network_limited": "Omezené připojení",
+    "network_portal": "Síť vyžaduje přihlášení",
+    "network_none": "Odpojeno",
+    "network_unknown": "Neznámý stav",
+    "network_unavailable": "NetworkManager není dostupný"
   },
   "sk": {
     "home": "Domov",

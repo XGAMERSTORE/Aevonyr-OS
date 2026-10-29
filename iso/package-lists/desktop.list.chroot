@@ -12,9 +12,12 @@ task-kde-desktop
 plasma-workspace
 plasma-nm
 sddm
+qml6-module-qtquick-controls
+qml6-module-qtquick-layouts
 xwayland
 xdg-utils
 network-manager
+nm-connection-editor
 
 # Desktop applications and Aevonyr Python desktop overlay
 firefox-esr
@@ -35,6 +38,9 @@ curl
 wget
 ca-certificates
 pipewire-audio
+plymouth
+plymouth-theme-breeze
+kde-config-plymouth
 wireplumber
 cups
 

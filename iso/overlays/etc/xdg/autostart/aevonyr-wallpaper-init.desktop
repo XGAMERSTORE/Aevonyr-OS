@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Wallpaper Setup
+Exec=/usr/local/bin/aevonyr-wallpaper-init
+Terminal=false
+OnlyShowIn=KDE;
+X-GNOME-Autostart-enabled=true

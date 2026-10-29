@@ -35,3 +35,10 @@ This is **a build configuration, not a proven release** until all steps pass:
 - [ ] Inventory redistribution notices for Debian, Wine, Waydroid, KDE and all bundled dependencies.
 
 No technology can guarantee compatibility with every Windows/Android application. External upstream licenses continue to apply. Boot/shutdown graphics in the older UEFI demo are not reused as real Linux boot animation.
+
+## 0.7.1 desktop experience
+- Animated violet Aevonyr SDDM sign-in using actual system accounts and passwords.
+- First-login Aevonyr wallpaper (later changes to the wallpaper are respected).
+- Real NetworkManager connectivity page and native Wi-Fi/Ethernet connection editor; no secrets stored by the custom shell.
+- KDE Breeze Plymouth graphical boot splash and `quiet splash` boot options; original Aevonyr boot animation is a future milestone.
+- New regression tests. A built ISO is **not yet proof of VirtualBox boot, SDDM theme operation or app compatibility**.

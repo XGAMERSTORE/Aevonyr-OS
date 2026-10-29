@@ -21,7 +21,7 @@ lb config noauto \
   --iso-application "Aevonyr OS Live" \
   --iso-publisher "Aevonyr Studio" \
   --iso-volume "AEVONYR_LIVE_07" \
-  --bootappend-live "boot=live components username=user hostname=aevonyr locales=en_US.UTF-8 keyboard-layouts=us"
+  --bootappend-live "boot=live components quiet splash username=user hostname=aevonyr locales=en_US.UTF-8 keyboard-layouts=us"
 mkdir -p config/package-lists config/includes.chroot/usr/lib/python3/dist-packages
 cp "$ROOT/iso/package-lists/desktop.list.chroot" config/package-lists/
 cp -a "$ROOT/iso/overlays/." config/includes.chroot/

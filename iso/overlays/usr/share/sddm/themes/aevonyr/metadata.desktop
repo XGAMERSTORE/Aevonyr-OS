@@ -1,0 +1,9 @@
+[SddmGreeterTheme]
+Name=Aevonyr
+Description=Animated Aevonyr sign-in
+Author=Aevonyr Studio
+Type=sddm-theme
+Version=0.7.1
+MainScript=Main.qml
+Theme-Id=aevonyr
+Theme-API=2.0
