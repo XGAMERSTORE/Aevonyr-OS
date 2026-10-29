@@ -4,7 +4,11 @@
 set -Eeuo pipefail
 ISO="$(realpath "$1")"
 RESULTS="$2"
-mkdir -p "$RESULTS"
+# The privileged live ISO builder may leave dist/ root-owned.
+if ! mkdir -p "$RESULTS" 2>/dev/null; then
+  sudo mkdir -p "$RESULTS"
+  sudo chown "$(id -u):$(id -g)" "$RESULTS"
+fi
 RESULTS="$(realpath "$RESULTS")"
 test -s "$ISO"
 command -v qemu-system-x86_64 >/dev/null
