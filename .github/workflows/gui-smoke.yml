@@ -1,0 +1,29 @@
+name: Aevonyr GUI smoke (Xvfb)
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/aevonyr-1.0-gui-validation
+    paths:
+      - 'aevonyr/**'
+      - 'tests/gui_smoke.py'
+      - '.github/workflows/gui-smoke.yml'
+permissions:
+  contents: read
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install headless X11 and Tk
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends python3-tk xvfb xauth
+      - name: Python unit tests
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 -m compileall -q aevonyr
+      - name: Open real Aevonyr GUI and exercise pages
+        run: |
+          xvfb-run -a -s "-screen 0 1280x800x24" python3 tests/gui_smoke.py
