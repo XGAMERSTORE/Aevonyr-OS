@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if ! command -v waydroid >/dev/null 2>&1; then
+  echo "Waydroid is not installed." >&2
+  exit 1
+fi
+if [[ "${XDG_SESSION_TYPE:-}" != "wayland" && -z "${WAYLAND_DISPLAY:-}" ]]; then
+  echo "Please log in using a Wayland desktop session." >&2
+  exit 1
+fi
+echo "Waydroid needs a one-time Android system image download."
+echo "Changes in Live mode are temporary. Install to disk for persistence."
+read -r -p "Initialize the Android runtime? [y/N] " answer
+case "$answer" in
+ y|Y|yes|YES) ;;
+ *) exit 0 ;;
+esac
+pkexec waydroid init
+pkexec systemctl start waydroid-container.service
+echo "Android initialized. Open it from the Aevonyr Applications page."

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Set up Android apps
+Comment=Initialize Waydroid for APK apps (download required)
+Exec=konsole -e /usr/local/bin/aevonyr-android-setup
+Terminal=false
+Icon=phone
+Categories=Settings;System;

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<defs><radialGradient id="bg"><stop stop-color="#312153"/><stop offset=".55" stop-color="#140d2e"/><stop offset="1" stop-color="#070614"/></radialGradient><radialGradient id="halo"><stop stop-color="#ef93ea" stop-opacity=".45"/><stop offset="1" stop-color="#a454ea" stop-opacity="0"/></radialGradient><linearGradient id="orb"><stop stop-color="#fa97e9"/><stop offset=".5" stop-color="#a367f7"/><stop offset="1" stop-color="#5ae0f6"/></linearGradient></defs>
+<rect width="1920" height="1080" fill="url(#bg)"/><circle cx="1170" cy="500" r="495" fill="url(#halo)"/><circle cx="1170" cy="490" r="243" fill="none" stroke="url(#orb)" stroke-width="28"/><circle cx="1218" cy="460" r="225" fill="#17102d"/>
+<path d="M0 830Q400 700 800 835T1920 800V1080H0Z" fill="#110b24" opacity=".8"/><path d="M0 910Q500 845 900 970T1920 850V1080H0Z" fill="#1b1136"/>
+<g fill="#e5cdfa" opacity=".85"><circle cx="360" cy="240" r="3"/><circle cx="480" cy="370" r="2"/><circle cx="1580" cy="190" r="3"/></g>
+<text x="135" y="175" fill="#f6edff" font-family="sans-serif" font-size="72" letter-spacing="11" font-weight="600">AEVONYR</text><text x="140" y="227" fill="#c7addf" font-family="sans-serif" font-size="24" letter-spacing="6">ONE SYSTEM. TWO WORLDS.</text>
+</svg>

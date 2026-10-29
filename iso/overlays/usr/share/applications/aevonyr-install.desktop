@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install Aevonyr OS
+Comment=Install Aevonyr OS to disk; back up data first!
+Exec=pkexec /usr/bin/calamares
+Icon=calamares
+Terminal=false
+Categories=System;

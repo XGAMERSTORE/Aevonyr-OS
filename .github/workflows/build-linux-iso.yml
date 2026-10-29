@@ -1,0 +1,62 @@
+name: Build Aevonyr Linux Live ISO
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/linux-live-distro
+    paths:
+      - 'iso/**'
+      - 'aevonyr/**'
+      - '.github/workflows/build-linux-iso.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check code and build scripts
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 -m compileall -q aevonyr
+          bash -n iso/build.sh
+          bash -n iso/overlays/usr/local/bin/aevonyr-android-setup
+      - name: Free disk on ephemeral runner
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/hostedtoolcache || true
+          df -h /
+      - name: Build Debian Linux live ISO in privileged container
+        run: |
+          docker run --rm --privileged -v "$GITHUB_WORKSPACE:/src" -w /src debian:trixie bash -euc '
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y --no-install-recommends \
+              live-build debootstrap squashfs-tools xorriso \
+              grub-efi-amd64-bin grub-pc-bin ca-certificates \
+              rsync curl wget cpio dosfstools mtools
+            chmod +x iso/build.sh
+            bash iso/build.sh
+          '
+      - name: Verify image
+        run: |
+          test -s dist/Aevonyr-OS-0.7-Linux-Live-amd64.iso
+          (cd dist && sha256sum -c SHA256SUMS)
+          file dist/*.iso
+          ls -lh dist/*.iso
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: aevonyr-os-0.7-linux-live-amd64
+          path: |
+            dist/*.iso
+            dist/SHA256SUMS
+          compression-level: 0
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: aevonyr-iso-build-log
+          path: dist/build.log
+          if-no-files-found: ignore
+          retention-days: 7

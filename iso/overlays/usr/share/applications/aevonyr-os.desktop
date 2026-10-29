@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr OS
+Comment=One System. Two Worlds.
+Exec=aevonyr
+Icon=computer
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true
