@@ -60,3 +60,10 @@ Actual boot, password prompt behavior, installer and EXE/APK functionality must 
 - Live mode disables Timeshift management in the Aevonyr UI.
 - Target output: dist/Aevonyr-OS-0.8.0-Linux-Live-amd64.iso.
 - Actual VM boot, installs and recovery need manual verification even when the build succeeds.
+
+## 0.9 Project Eclipse
+- Adds kdeconnect, PackageKit, fwupd and KDE Discover firmware-update backend.
+- First-login Welcome wizard, Aevonyr Updates and Phone Link launchers.
+- Improved responsive navigation, first-run status storage, no automatic pairing or firmware flashing.
+- CI verifies the checksum, checks optical boot metadata and searches for a squashfs root filesystem (still not a full VM boot test).
+- Output: `dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso`.

@@ -64,6 +64,15 @@ class LiveBuildConfigTests(unittest.TestCase):
         self.assertIn('plasma-discover-backend-fwupd',packages)
         self.assertIn('fwupd',packages)
 
+    def test_onboarding_wired_to_desktop(self):
+        cli = (ROOT/'aevonyr/__main__.py').read_text()
+        for flag in ('--welcome','--updates','--phone'):
+            self.assertIn(flag,cli)
+        ui=(ROOT/'aevonyr/ui.py').read_text()
+        self.assertIn('self.after(750, self._maybe_welcome)',ui)
+        self.assertIn('WelcomeWizard(self)',ui)
+        self.assertIn('self.nav_canvas',ui)
+
     def test_desktop_files(self):
         files = ROOT/'iso/overlays'
         self.assertIn('Exec=/usr/local/bin/aevonyr',(files/'etc/xdg/autostart/aevonyr-os.desktop').read_text())
