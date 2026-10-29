@@ -1,37 +1,18 @@
-# Test Aevonyr OS 0.7.2 safely in VirtualBox
+# Aevonyr OS 1.0 — safe VirtualBox testing
 
-## 1. Download and verify
-- Open the latest successful [GitHub Actions ISO build](https://github.com/XGAMERSTORE/Aevonyr-OS/actions/workflows/build-linux-iso.yml).
-- Download and extract the artifact ZIP; select the **.iso file**, not the ZIP.
-- Verify it matches the published SHA256SUMS. On Windows: `certutil -hashfile Aevonyr-OS-0.7.2-Linux-Live-amd64.iso SHA256`.
+Download Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso from a successful GitHub Actions artifact; extract it from ZIP and compare with SHA256SUMS.
 
-## 2. Create a disposable VM
-Use VirtualBox 7.x, **Linux / Debian (64-bit)**, 4 GB RAM or more (6 GB recommended for Waydroid), 2–4 virtual CPUs, VMSVGA graphics, ~128 MB video RAM, a **new blank 40+ GB virtual disk**, EFI enabled and Secure Boot off. Connect the ISO as an optical drive and keep NAT network mode enabled.
+Create an empty VirtualBox 7.x VM: Debian 64-bit, EFI enabled, Secure Boot off, VMSVGA, 128 MB video RAM, 4–6 GB RAM, 2 or more CPUs, at least 40 GB of NEW VIRTUAL disk, NAT network.
 
-Do **not** mount your physical disk as a raw disk. Do **not** test Calamares on a disk containing real data.
+Boot the ISO. Verify:
+1. BIOS or UEFI boot screen and SDDM/KDE session
+2. Aevonyr Welcome, network connection, browser and KDE Discover
+3. Aevonyr Pulse: CPU and RAM meters plus changing history graph
+4. Launcher, App Hub, Phone Link, notes, backup and restore views
+5. Login/logout, reboot and shutdown
 
-## 3. First boot
-- Start the VM and choose the Live boot option.
-- KDE Plasma and the Aevonyr application should load after the SDDM/live session starts.
-- The Plymouth splash and animated login theme are under test; take a screenshot if either fails.
-- Check network status in Aevonyr's **Network** pane and open Firefox.
+Only test Calamares on the VM's disposable disk; never point it to a drive containing personal data.
 
-## 4. Collect support information
-Open Konsole and run:
-```bash
-aevonyr --diagnose
-ip link
-uname -a
-```
-Share non-sensitive output and VM screenshots when reporting a problem. Do not share passwords or private network details.
+In Konsole, run: aevonyr --diagnose, wine --version, waydroid status. Waydroid may not work in VirtualBox without supported Wayland/kernel binder features.
 
-## 5. App checks
-- Check Wine with `wine --version`. Use a small trusted Windows EXE for a compatibility test.
-- Check Waydroid with `waydroid status`. Setup requires initialized Android images, kernel binder support and a functional Wayland session; a headless VirtualBox VM may be incompatible.
-- Never run an untrusted EXE/APK merely to test the launcher.
-
-## 6. Installer check
-Use **Install Aevonyr OS** only with the VM's **blank virtual disk**, and review Calamares partition choices carefully. Reboot from that virtual disk after installation and confirm the new account/password. Backups remain essential even after a successful VM test.
-
-## Current confidence
-The CI pipeline checks the source code, generates the ISO, validates its existence and its SHA256 checksum. It does **not yet automatically confirm** graphical boot, SDDM theme loading, hardware support or the Calamares installation. Those need a manual VirtualBox run or dedicated VM smoke tests.
+A screenshot smoke from QEMU is diagnostic only, not proof of complete OS boot/login or installer safety. Do not install to your main computer before actual test results and backups.

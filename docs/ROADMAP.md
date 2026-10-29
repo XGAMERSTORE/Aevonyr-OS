@@ -1,29 +1,12 @@
-# Aevonyr OS roadmap
+# Aevonyr roadmap
 
-## 0.8 — Universal Apps (Linux image successfully built)
-- Aevonyr Launcher with searchable installed Linux, Flatpak and Waydroid apps.
-- Opt-in Flathub and interactive installs, Wine/Waydroid launch paths.
-- Timeshift for system snapshots and Back In Time for separate personal backups.
-- KDE Eclipse palette and branding.
+## 1.0 Eclipse Edition — current Release Candidate
+Debian Linux Live ISO, KDE Plasma, Wine/Waydroid/Flatpak app integration, Eclipse branding, Welcome, Phone Link, Updates, Restore Center, and new Aevonyr Pulse live metrics. CI checks Python and builds BIOS+UEFI ISO, verifies the Linux squashfs and SHA256.
 
-## 0.9 — Project Eclipse (currently in development)
-- First-run wizard in Czech and English (language, network, apps, phone, backup).
-- KDE Discover update access with PackageKit, Flatpak and fwupd integration.
-- KDE Connect phone pairing, non-sensitive reachability count.
-- Better small-screen navigation and Live mode status.
-- More thorough image checks for boot records and Linux filesystem.
-- Remaining: ISO assembly success, GUI boot and functionality tests.
+## Required before stable 1.0
+Manual VirtualBox/QEMU GUI boot and login; blank-disk Calamares installer test; network and drivers; actual Wine/Waydroid app tests; safe snapshot and personal backup recovery. Security/update and license review.
 
-## 0.9.x — Reliability
-- Actual QEMU/VirtualBox boot tests, desktop/login smoke checks and installer tests on disposable virtual disks.
-- Snapshot recovery, data-backup restore drills, encrypted disk layouts.
-- Hardware/firmware and device driver compatibility testing.
-- Better Wine per-application environment management and Waydroid initialization UX.
+## 1.0.x and beyond
+Automated VM login and installer assertions, reliable update/recovery pathway, better per-app Wine management, phone-device integration, accessibility, translations, GPU testing and lower-latency KDE native UI.
 
-## 1.0 — Supported OS candidate
-- Secure and tested update path; recovery/rollback design.
-- Explicit license and redistribution inventory; support lifecycle.
-- Accessibility, localization, privacy and security audit.
-- User documentation and regular hardware regression tests.
-
-Current Aevonyr uses the **KDE Plasma compositor** rather than a custom standalone Wayland compositor. This is intentional until the Linux distribution is reliable enough.
+The current desktop runs in the real KDE compositor and is not its own Wayland compositor.

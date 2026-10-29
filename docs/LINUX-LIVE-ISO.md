@@ -67,3 +67,11 @@ Actual boot, password prompt behavior, installer and EXE/APK functionality must 
 - Improved responsive navigation, first-run status storage, no automatic pairing or firmware flashing.
 - CI verifies the checksum, checks optical boot metadata and searches for a squashfs root filesystem (still not a full VM boot test).
 - Output: `dist/Aevonyr-OS-0.9.0-Linux-Live-amd64.iso`.
+
+
+## 1.0 Eclipse Edition release candidate
+- Aevonyr Pulse genuine local CPU/memory/storage graph and Plasma System Monitor.
+- Fixed unsupported xorriso verification command. Verify El Torito BIOS and UEFI, list /live squashfs, and check SHA256.
+- Experimental QEMU graphical screenshot probes are non-blocking and need manual review.
+- Output: dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso.
+- Full VirtualBox GUI boot and disk install verification is still required before stable release.
