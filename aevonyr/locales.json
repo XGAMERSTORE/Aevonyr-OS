@@ -97,7 +97,8 @@
     "paired_devices": "Paired devices",
     "phone_unknown": "Paired devices currently unavailable",
     "phone_privacy": "Pairing and permissions are controlled by KDE Connect. Aevonyr stores no phone identifiers.",
-    "open_welcome": "Open First Run Guide"
+    "open_welcome": "Open First Run Guide",
+    "live_mode_hint": "Live mode: changes may be lost when you restart. Install on a disposable VM disk for testing."
   },
   "cs": {
     "home": "Domů",
@@ -197,7 +198,8 @@
     "paired_devices": "Spárovaná zařízení",
     "phone_unknown": "Informace o spárovaných zařízeních nejsou dostupné",
     "phone_privacy": "Oprávnění a párování spravuje KDE Connect. Aevonyr neukládá identifikátory telefonu.",
-    "open_welcome": "Úvodní průvodce"
+    "open_welcome": "Úvodní průvodce",
+    "live_mode_hint": "Live režim: změny se po restartu mohou ztratit. Instalaci nejprve testuj na prázdném virtuálním disku."
   },
   "sk": {
     "home": "Domov",

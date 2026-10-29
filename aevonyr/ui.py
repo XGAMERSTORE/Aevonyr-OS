@@ -58,8 +58,20 @@ class AevonyrDesktop(tk.Tk):
         self.sidebar.pack_propagate(False)
         tk.Label(self.sidebar, text="◕  AEVONYR", bg=SIDE, fg=INK,
                  font=("DejaVu Sans", 17, "bold"), pady=29).pack(fill="x")
-        self.nav = tk.Frame(self.sidebar, bg=SIDE)
-        self.nav.pack(fill="x", padx=12)
+        # Scroll navigation on smaller screens so all pages remain accessible.
+        nav_view = tk.Frame(self.sidebar, bg=SIDE)
+        nav_view.pack(fill="both", expand=True, padx=(7, 2), pady=(0, 6))
+        self.nav_canvas = tk.Canvas(nav_view, bg=SIDE, bd=0, highlightthickness=0)
+        nav_scroll = tk.Scrollbar(nav_view, orient="vertical", command=self.nav_canvas.yview)
+        self.nav_canvas.configure(yscrollcommand=nav_scroll.set)
+        nav_scroll.pack(side="right", fill="y")
+        self.nav_canvas.pack(side="left", fill="both", expand=True)
+        self.nav = tk.Frame(self.nav_canvas, bg=SIDE)
+        nav_window = self.nav_canvas.create_window((0, 0), window=self.nav, anchor="nw")
+        self.nav.bind("<Configure>", lambda _event:
+                      self.nav_canvas.configure(scrollregion=self.nav_canvas.bbox("all")))
+        self.nav_canvas.bind("<Configure>", lambda event:
+                             self.nav_canvas.itemconfigure(nav_window, width=event.width))
         main = tk.Frame(self, bg=BG)
         main.pack(side="right", fill="both", expand=True)
         self.header = tk.Frame(main, bg=BG, height=80)
@@ -150,7 +162,11 @@ class AevonyrDesktop(tk.Tk):
         row.pack(fill="x", pady=(16, 0))
         self._button(row, self.t("app_hub"), lambda: self.show("apps")).pack(side="left", padx=(0, 12))
         self._button(row, self.t("restore"), lambda: self.show("restore")).pack(side="left", padx=(0, 9))
-        self._button(row, self.t("updates"), lambda: self.show("updates")).pack(side="left")
+        self._button(row, self.t("updates"), lambda: self.show("updates")).pack(side="left", padx=(0, 9))
+        self._button(row, self.t("phone"), lambda: self.show("phone")).pack(side="left")
+        if is_live_boot():
+            self._label(self.body, self.t("live_mode_hint"), 10, PINK).pack(
+                anchor="w", pady=(18, 0))
 
     def _maybe_welcome(self):
         if not completed():
