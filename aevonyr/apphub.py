@@ -163,7 +163,7 @@ def _terminal_plan(arguments, which=shutil.which):
     console = which("konsole")
     if not console:
         raise AppHubError("Konsole is needed for interactive installation.")
-    return (console, "-e", *arguments)
+    return (console, "--hold", "-e", *arguments)
 
 
 def enable_flathub_command(which=shutil.which):
