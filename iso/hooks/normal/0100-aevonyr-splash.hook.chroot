@@ -1,0 +1,10 @@
+#!/bin/sh
+set -eu
+# Runs inside live-build chroot; theme is included in initramfs.
+if command -v plymouth-set-default-theme >/dev/null 2>&1; then
+  if [ -f /usr/share/plymouth/themes/aevonyr/aevonyr.plymouth ]; then
+    plymouth-set-default-theme -R aevonyr
+  else
+    plymouth-set-default-theme -R breeze
+  fi
+fi

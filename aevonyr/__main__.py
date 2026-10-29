@@ -2,10 +2,19 @@
 import argparse
 from .compat import backend_status, make_plan, execute_plan, CompatibilityError
 from .i18n import LANGUAGES, CATALOG, install_language_pack
+from .diagnostics import diagnose, format_report
 
 def main():
-    parser = argparse.ArgumentParser(description="Aevonyr OS desktop preview")
+    parser = argparse.ArgumentParser(description="Aevonyr OS 1.0 Eclipse Edition")
     parser.add_argument("--check", action="store_true", help="check runtime availability")
+    parser.add_argument("--launcher", action="store_true", help="open fullscreen Aevonyr launcher")
+    parser.add_argument("--app-hub", action="store_true", help="open Universal App Hub")
+    parser.add_argument("--welcome", action="store_true", help="open Aevonyr first-run wizard")
+    parser.add_argument("--updates", action="store_true", help="open software and firmware update center")
+    parser.add_argument("--phone", action="store_true", help="open phone integration")
+    parser.add_argument("--pulse", action="store_true", help="open live performance dashboard")
+    parser.add_argument("--restore", action="store_true", help="open system restore and backup tools")
+    parser.add_argument("--diagnose", action="store_true", help="show actual Linux system diagnostics")
     parser.add_argument("--launch", metavar="FILE", help="launch EXE/MSI or install APK")
     parser.add_argument("--languages", action="store_true", help="list installed interface languages")
     parser.add_argument("--install-language", metavar="JSON", help="install a community language pack")
@@ -23,6 +32,9 @@ def main():
             parser.exit(1, f"Language pack error: {exc}\n")
         print(f"Installed language pack: {code}")
         return 0
+    if args.diagnose:
+        print(format_report(diagnose()))
+        return 0
     if args.check:
         for key, value in backend_status().items():
             print(f"{key}: {'available' if value else 'unavailable'}")
@@ -35,8 +47,25 @@ def main():
         except (CompatibilityError, OSError) as exc:
             parser.exit(1, f"Error: {exc}\n")
         return 0
+    if args.launcher:
+        from .launcher import AevonyrLauncher
+        AevonyrLauncher().mainloop()
+        return 0
     from .ui import AevonyrDesktop
-    AevonyrDesktop().mainloop()
+    desktop = AevonyrDesktop()
+    if args.app_hub:
+        desktop.show("apps")
+    elif args.restore:
+        desktop.show("restore")
+    elif args.updates:
+        desktop.show("updates")
+    elif args.phone:
+        desktop.show("phone")
+    elif args.pulse:
+        desktop.show("pulse")
+    if args.welcome:
+        desktop.after(150, desktop.show_welcome)
+    desktop.mainloop()
     return 0
 
 if __name__ == "__main__":

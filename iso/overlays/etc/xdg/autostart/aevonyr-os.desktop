@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Desktop
+Comment=Launch Aevonyr interface inside KDE
+Exec=/usr/local/bin/aevonyr
+Icon=computer
+Terminal=false
+OnlyShowIn=KDE;
+X-GNOME-Autostart-enabled=true

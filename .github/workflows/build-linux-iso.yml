@@ -1,0 +1,97 @@
+name: Build Aevonyr Linux Live ISO
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - feature/linux-live-distro
+    paths:
+      - 'iso/**'
+      - 'aevonyr/**'
+      - '.github/workflows/build-linux-iso.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 110
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check code and build scripts
+        run: |
+          python3 -m unittest discover -s tests -v
+          python3 -m compileall -q aevonyr
+          bash -n iso/build.sh
+          bash -n scripts/qemu-screenshots.sh
+          bash -n iso/overlays/usr/local/bin/aevonyr-android-setup
+          bash -n iso/overlays/usr/local/bin/aevonyr-installer
+          bash -n iso/overlays/usr/local/bin/aevonyr-colorscheme-init
+          bash -n iso/hooks/normal/0100-aevonyr-splash.hook.chroot
+      - name: Free disk on ephemeral runner
+        run: |
+          sudo rm -rf /usr/local/lib/android /usr/share/dotnet /opt/hostedtoolcache || true
+          df -h /
+      - name: Build Debian Linux live ISO in privileged container
+        run: |
+          docker run --rm --privileged -v "$GITHUB_WORKSPACE:/src" -w /src debian:trixie bash -euc '
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y --no-install-recommends \
+              live-build debootstrap squashfs-tools xorriso \
+              grub-efi-amd64-bin grub-pc-bin ca-certificates \
+              rsync curl wget cpio dosfstools mtools
+            chmod +x iso/build.sh
+            bash iso/build.sh
+          '
+      - name: Verify image
+        run: |
+          test -s dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso
+          (cd dist && sha256sum -c SHA256SUMS)
+          file dist/*.iso
+          # Check that both optical boot records and Linux live filesystem exist.
+          docker run --rm -v "$GITHUB_WORKSPACE/dist:/dist:ro" debian:trixie bash -euc '
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update -qq >/dev/null
+            apt-get install -y -qq --no-install-recommends xorriso >/dev/null
+            iso="/dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso"
+            xorriso -indev "$iso" -report_el_torito plain > /tmp/boot-report.txt
+            cat /tmp/boot-report.txt
+            grep -Eq "El Torito boot img.*BIOS" /tmp/boot-report.txt
+            grep -Eq "El Torito boot img.*UEFI" /tmp/boot-report.txt
+            xorriso -indev "$iso" -ls /live > /tmp/live-files.txt
+            cat /tmp/live-files.txt
+            grep -Eq "[.]squashfs" /tmp/live-files.txt
+          '
+          ls -lh dist/*.iso
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: aevonyr-os-1.0.0-eclipse-live-amd64
+          path: |
+            dist/*.iso
+            dist/SHA256SUMS
+          compression-level: 0
+          retention-days: 14
+      - name: Experimental BIOS and UEFI QEMU screenshots (non-blocking)
+        if: success()
+        continue-on-error: true
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf socat
+          bash scripts/qemu-screenshots.sh "dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso" "dist/boot-screens"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aevonyr-1.0-boot-screenshots
+          path: |
+            dist/boot-screens/*.ppm
+            dist/boot-screens/*-qemu.log
+            dist/boot-screens/*-serial.log
+          if-no-files-found: ignore
+          retention-days: 14
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: aevonyr-iso-build-log
+          path: dist/build.log
+          if-no-files-found: ignore
+          retention-days: 7

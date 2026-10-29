@@ -2,6 +2,8 @@
 from datetime import datetime
 from pathlib import Path
 import platform
+import queue
+import threading
 import shutil
 import subprocess
 import tkinter as tk
@@ -10,6 +12,17 @@ from tkinter import ttk, filedialog, messagebox
 from .compat import CompatibilityError, backend_status, make_plan, execute_plan, open_android
 from .config import load_preferences, save_preferences, notes_path
 from .i18n import LANGUAGES, tr, install_language_pack
+from .network import network_status, open_network_settings
+from .diagnostics import diagnose, format_report
+from .session import execute_action, SessionError
+from .apphub import (
+    FEATURED, App, AppHubError, installed_apps, launch_command,
+    enable_flathub_command, install_flatpak_command, start,
+)
+from .restore import RestoreError, is_live_boot, restore_command, backup_command, start_tool
+from .onboarding import completed
+from .integrations import IntegrationError, available_tools, paired_device_count
+from .integrations import start_tool as start_integration
 
 BG = "#100e1c"
 SIDE = "#191528"
@@ -27,13 +40,14 @@ class AevonyrDesktop(tk.Tk):
         self.language = self.preferences["language"]
         self.current_page = "home"
         self.current_dir = Path.home()
-        self.title("Aevonyr OS — Desktop Preview")
+        self.title("Aevonyr OS 1.0 — Eclipse Edition")
         self.geometry("1140x730")
         self.minsize(780, 520)
         self.configure(bg=BG)
         self._create_shell()
         self.show("home")
         self.after(1000, self._tick)
+        self.after(750, self._maybe_welcome)
 
     def t(self, key):
         return tr(key, self.language)
@@ -44,8 +58,20 @@ class AevonyrDesktop(tk.Tk):
         self.sidebar.pack_propagate(False)
         tk.Label(self.sidebar, text="◕  AEVONYR", bg=SIDE, fg=INK,
                  font=("DejaVu Sans", 17, "bold"), pady=29).pack(fill="x")
-        self.nav = tk.Frame(self.sidebar, bg=SIDE)
-        self.nav.pack(fill="x", padx=12)
+        # Scroll navigation on smaller screens so all pages remain accessible.
+        nav_view = tk.Frame(self.sidebar, bg=SIDE)
+        nav_view.pack(fill="both", expand=True, padx=(7, 2), pady=(0, 6))
+        self.nav_canvas = tk.Canvas(nav_view, bg=SIDE, bd=0, highlightthickness=0)
+        nav_scroll = tk.Scrollbar(nav_view, orient="vertical", command=self.nav_canvas.yview)
+        self.nav_canvas.configure(yscrollcommand=nav_scroll.set)
+        nav_scroll.pack(side="right", fill="y")
+        self.nav_canvas.pack(side="left", fill="both", expand=True)
+        self.nav = tk.Frame(self.nav_canvas, bg=SIDE)
+        nav_window = self.nav_canvas.create_window((0, 0), window=self.nav, anchor="nw")
+        self.nav.bind("<Configure>", lambda _event:
+                      self.nav_canvas.configure(scrollregion=self.nav_canvas.bbox("all")))
+        self.nav_canvas.bind("<Configure>", lambda event:
+                             self.nav_canvas.itemconfigure(nav_window, width=event.width))
         main = tk.Frame(self, bg=BG)
         main.pack(side="right", fill="both", expand=True)
         self.header = tk.Frame(main, bg=BG, height=80)
@@ -77,12 +103,12 @@ class AevonyrDesktop(tk.Tk):
         for child in self.nav.winfo_children():
             child.destroy()
         for page, icon in (("home", "⌂"), ("apps", "◇"), ("files", "▣"),
-                           ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
+                           ("network", "◉"), ("updates", "↻"), ("phone", "▤"), ("pulse", "◕"), ("system", "◈"), ("restore", "◷"), ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
             selected = page == self.current_page
             button = self._button(self.nav, f" {icon}   {self.t(page)}",
                                   lambda p=page: self.show(p),
                                   PANEL2 if selected else SIDE)
-            button.configure(anchor="w", fg=INK if selected else MUTED, pady=14)
+            button.configure(anchor="w", fg=INK if selected else MUTED, pady=7, font=("DejaVu Sans", 9, "bold"))
             button.pack(fill="x", pady=3)
 
     def _render_header(self):
@@ -109,7 +135,7 @@ class AevonyrDesktop(tk.Tk):
             child.destroy()
         {
             "home": self.home_page, "apps": self.apps_page, "files": self.files_page,
-            "notes": self.notes_page, "settings": self.settings_page,
+            "network": self.network_page, "updates": self.updates_page, "phone": self.phone_page, "pulse": self.pulse_page, "system": self.system_page, "restore": self.restore_page, "notes": self.notes_page, "settings": self.settings_page,
             "about": self.about_page
         }[page]()
 
@@ -132,20 +158,314 @@ class AevonyrDesktop(tk.Tk):
         label = "    •    ".join(f"{name}: {self.t('ready') if status[key] else self.t('missing')}"
                                 for name, key in (("Wine", "wine"), ("Waydroid", "waydroid")))
         self._label(self.body, label, 11, MUTED).pack(anchor="w", pady=(23, 0))
+        row = tk.Frame(self.body, bg=BG)
+        row.pack(fill="x", pady=(16, 0))
+        self._button(row, self.t("app_hub"), lambda: self.show("apps")).pack(side="left", padx=(0, 12))
+        self._button(row, self.t("restore"), lambda: self.show("restore")).pack(side="left", padx=(0, 9))
+        self._button(row, self.t("updates"), lambda: self.show("updates")).pack(side="left", padx=(0, 9))
+        self._button(row, self.t("phone"), lambda: self.show("phone")).pack(side="left")
+        self._button(self.body, self.t("pulse_open"), lambda: self.show("pulse")).pack(
+            anchor="w", pady=(12, 0))
+        if is_live_boot():
+            self._label(self.body, self.t("live_mode_hint"), 10, PINK).pack(
+                anchor="w", pady=(18, 0))
+
+    def pulse_page(self):
+        # Aevonyr Pulse updates are read-only and stop when the page is removed.
+        from .pulse_ui import PulsePanel
+        PulsePanel(self.body, self.t).pack(fill="both", expand=True)
+
+    def _maybe_welcome(self):
+        if not completed():
+            self.show_welcome()
+
+    def show_welcome(self):
+        if getattr(self, "_wizard", None) is not None:
+            try:
+                if self._wizard.winfo_exists():
+                    self._wizard.lift()
+                    self._wizard.focus_force()
+                    return
+            except tk.TclError:
+                pass
+        from .welcome import WelcomeWizard
+        self._wizard = WelcomeWizard(self)
+
+    def _open_kde_tool(self, key):
+        try:
+            start_integration(key)
+        except (IntegrationError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
+
+    def updates_page(self):
+        self._label(self.body, self.t("updates_desc"), 12, MUTED).pack(anchor="w", pady=(0, 20))
+        tools = available_tools()
+        self._label(self.body, self.t("updates_manager") + ": " +
+                    (self.t("ready") if tools["updates"] else self.t("missing")),
+                    13, INK, True).pack(anchor="w", pady=(0, 15))
+        row = tk.Frame(self.body, bg=BG)
+        row.pack(fill="x")
+        self._card(row, self.t("software_updates"), self.t("software_updates_desc"),
+                   lambda: self._open_kde_tool("updates"),
+                   self.t("open_updates")).pack(side="left", expand=True, fill="both", padx=(0, 10))
+        self._card(row, self.t("firmware_updates"), self.t("firmware_updates_desc"),
+                   lambda: self._open_kde_tool("updates"),
+                   self.t("open_updates")).pack(side="left", expand=True, fill="both", padx=(10, 0))
+        self._label(self.body, self.t("updates_warning"), 10, MUTED).pack(
+            anchor="w", pady=(24, 10))
+        self._button(self.body, self.t("backup_first"),
+                     lambda: self.show("restore")).pack(anchor="w")
+
+    def phone_page(self):
+        self._label(self.body, self.t("phone_desc"), 12, MUTED).pack(anchor="w", pady=(0, 22))
+        tools = available_tools()
+        self._label(self.body, self.t("phone_manager") + ": " +
+                    (self.t("ready") if tools["phone"] else self.t("missing")),
+                    13, INK, True).pack(anchor="w", pady=(0, 16))
+        self._button(self.body, self.t("pair_phone"),
+                     lambda: self._open_kde_tool("phone")).pack(anchor="w", pady=(0, 13))
+        self.phone_status = self._label(self.body, self.t("checking_devices"), 11, MUTED)
+        self.phone_status.pack(anchor="w", pady=(4, 12))
+        self._button(self.body, self.t("refresh"), self._scan_devices).pack(anchor="w")
+        self._label(self.body, self.t("phone_privacy"), 10, MUTED).pack(anchor="w", pady=(25, 0))
+        self._scan_devices()
+
+    def _scan_devices(self):
+        if self.current_page != "phone":
+            return
+        status_queue = queue.Queue(maxsize=1)
+        self._phone_queue = status_queue
+        self.phone_status.configure(text=self.t("checking_devices"))
+        def read_only_probe():
+            try:
+                status_queue.put(paired_device_count())
+            except Exception:
+                status_queue.put(None)
+        threading.Thread(target=read_only_probe, daemon=True).start()
+        self.after(130, lambda: self._poll_devices(status_queue))
+
+    def _poll_devices(self, result_queue):
+        if self.current_page != "phone":
+            return
+        try:
+            count = result_queue.get_nowait()
+        except queue.Empty:
+            self.after(130, lambda: self._poll_devices(result_queue))
+            return
+        message = self.t("phone_unknown") if count is None else (
+            self.t("paired_devices") + ": " + str(count))
+        if self.phone_status.winfo_exists():
+            self.phone_status.configure(text=message)
+
+    def network_page(self):
+        self._label(self.body, self.t("network_desc"), 12, MUTED).pack(anchor="w", pady=(5, 23))
+        self._label(self.body, self.t("network_status") + ": " + self.t("network_" + network_status()),
+                    16, INK, True).pack(anchor="w", pady=(0, 18))
+        self._button(self.body, self.t("network_settings"), self._open_network).pack(anchor="w", pady=(0, 13))
+        self._button(self.body, self.t("refresh"), lambda: self.show("network")).pack(anchor="w")
+
+    def _open_network(self):
+        try:
+            open_network_settings()
+        except (RuntimeError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
+
+    def system_page(self):
+        self._label(self.body, self.t("system_desc"), 12, MUTED).pack(anchor="w", pady=(0, 16))
+        details = diagnose()
+        card = tk.Frame(self.body, bg=PANEL, highlightbackground="#59416c", highlightthickness=1)
+        card.pack(fill="both", expand=True, pady=(0, 14))
+        self._label(card, format_report(details), 12, INK, False, PANEL).pack(
+            anchor="w", padx=20, pady=25)
+        self._button(self.body, self.t("copy_diagnostics"),
+                     lambda: self._copy_report(format_report(details))).pack(anchor="w")
+
+    def _copy_report(self, report):
+        self.clipboard_clear()
+        self.clipboard_append(report)
+        self.update()
+        messagebox.showinfo("Aevonyr OS", self.t("report_copied"))
+
+    def _session_action(self, action):
+        if action != "lock" and not messagebox.askyesno(
+                "Aevonyr OS", self.t("confirm_action") + " " + self.t("action_" + action) + "?"):
+            return
+        try:
+            execute_action(action)
+        except (SessionError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
 
     def apps_page(self):
-        self._label(self.body, self.t("choose_app"), 13, MUTED).pack(anchor="w", pady=(5, 21))
+        self._label(self.body, self.t("app_hub_desc"), 10, MUTED).pack(anchor="w", pady=(0, 12))
         actions = tk.Frame(self.body, bg=BG)
-        actions.pack(fill="x")
-        for label, command in ((self.t("choose_exe"), self.pick_windows),
-                               (self.t("choose_apk"), self.pick_apk),
-                               (self.t("open_android"), self._open_android)):
-            self._button(actions, label, command).pack(side="left", padx=(0, 11))
-        status = backend_status()
-        self._label(self.body, f"Wine: {'available' if status['wine'] else 'not installed'}\n"
-                               f"Waydroid: {'available' if status['waydroid'] else 'not installed'}\n"
-                               f"Wayland: {'active' if status['wayland'] else 'inactive'}",
-                    12, MUTED).pack(anchor="w", pady=26)
+        actions.pack(fill="x", pady=(0, 13))
+        for text, command in (
+            (self.t("choose_exe"), self.pick_windows),
+            (self.t("choose_apk"), self.pick_apk),
+            (self.t("open_android"), self._open_android),
+            (self.t("open_discover"), self._open_discover),
+        ):
+            self._button(actions, text, command).pack(side="left", padx=(0, 9))
+
+        search_row = tk.Frame(self.body, bg=BG)
+        search_row.pack(fill="x")
+        self._label(search_row, self.t("search_apps"), 11, INK, True).pack(side="left", padx=(0, 13))
+        self.app_search = tk.StringVar()
+        tk.Entry(search_row, textvariable=self.app_search, bg=PANEL,
+                 fg=INK, insertbackground=INK, relief="flat",
+                 font=("DejaVu Sans", 11)).pack(side="left", fill="x", expand=True, ipady=7)
+        self.app_search.trace_add("write", lambda *_: self._filter_installed_apps())
+
+        self._label(self.body, self.t("installed_apps"), 12, INK, True).pack(anchor="w", pady=(14, 6))
+        listed = tk.Frame(self.body, bg=PANEL)
+        listed.pack(fill="both", expand=True)
+        scrollbar = tk.Scrollbar(listed)
+        scrollbar.pack(side="right", fill="y")
+        self.app_listbox = tk.Listbox(
+            listed, bg=PANEL, fg=INK, selectbackground="#7046a2",
+            selectforeground=INK, highlightthickness=0, bd=0, height=8,
+            activestyle="none", font=("DejaVu Sans", 10),
+            yscrollcommand=scrollbar.set,
+        )
+        self.app_listbox.pack(side="left", fill="both", expand=True, padx=9, pady=8)
+        scrollbar.config(command=self.app_listbox.yview)
+        self.app_listbox.bind("<Double-Button-1>", lambda _event: self._launch_selected())
+        self._all_apps = []
+        self._visible_apps = []
+        row = tk.Frame(self.body, bg=BG)
+        row.pack(fill="x", pady=(7, 8))
+        self._button(row, self.t("launch_app"), self._launch_selected).pack(side="left", padx=(0, 8))
+        self._button(row, self.t("refresh"), lambda: self.show("apps")).pack(side="left")
+        self._label(row, self.t("apps_loading"), 9, MUTED).pack(side="right")
+
+        self._label(self.body, self.t("featured_flatpak"), 12, INK, True).pack(anchor="w", pady=(7, 6))
+        self.featured_listbox = tk.Listbox(
+            self.body, bg=PANEL, fg=INK, selectbackground="#7046a2",
+            selectforeground=INK, highlightthickness=0, bd=0,
+            font=("DejaVu Sans", 10), height=4, exportselection=False,
+        )
+        self.featured_listbox.pack(fill="x")
+        self._featured = [App("Flatpak", name, identifier) for name, identifier in FEATURED]
+        for app in self._featured:
+            self.featured_listbox.insert(tk.END, f"  {app.name}  ·  {app.identifier}")
+        self.featured_listbox.selection_set(0)
+        row = tk.Frame(self.body, bg=BG)
+        row.pack(fill="x", pady=(9, 2))
+        self._button(row, self.t("install_flatpak"), self._install_featured).pack(side="left", padx=(0, 9))
+        self._button(row, self.t("enable_flathub"), self._enable_flathub).pack(side="left")
+
+        self._app_result = queue.Queue(maxsize=1)
+        load_queue = self._app_result
+        def loader():
+            try:
+                apps = installed_apps()
+                load_queue.put((apps, ""))
+            except Exception as exc:
+                load_queue.put(([], str(exc)))
+        threading.Thread(target=loader, daemon=True).start()
+        self.after(120, lambda: self._poll_app_result(load_queue))
+
+    def _poll_app_result(self, result_queue):
+        if self.current_page != "apps":
+            return
+        try:
+            apps, error = result_queue.get_nowait()
+        except queue.Empty:
+            self.after(120, lambda: self._poll_app_result(result_queue))
+            return
+        self._all_apps = apps
+        self._filter_installed_apps()
+        if error:
+            messagebox.showwarning("Aevonyr App Hub", error)
+
+    def _filter_installed_apps(self):
+        if not hasattr(self, "app_listbox") or self.current_page != "apps":
+            return
+        needle = self.app_search.get().casefold().strip()
+        self._visible_apps = [app for app in self._all_apps
+                              if needle in app.name.casefold() or needle in app.source.casefold()][:350]
+        self.app_listbox.delete(0, tk.END)
+        for app in self._visible_apps:
+            self.app_listbox.insert(tk.END, f"  {app.name}      [{app.source}]")
+        if self._visible_apps:
+            self.app_listbox.selection_set(0)
+
+    def _launch_selected(self):
+        selected = self.app_listbox.curselection()
+        if not selected:
+            return
+        app = self._visible_apps[selected[0]]
+        try:
+            start(launch_command(app))
+        except (AppHubError, OSError) as exc:
+            messagebox.showerror("Aevonyr App Hub", str(exc))
+
+    def _install_featured(self):
+        selected = self.featured_listbox.curselection()
+        if not selected:
+            return
+        app = self._featured[selected[0]]
+        if not messagebox.askyesno("Aevonyr App Hub",
+            f"{self.t('install_flatpak')}\n\n{app.name}\n{app.identifier}\n\n"
+            + self.t("install_review")):
+            return
+        try:
+            start(install_flatpak_command(app.identifier))
+        except (AppHubError, OSError) as exc:
+            messagebox.showerror("Aevonyr App Hub", str(exc))
+
+    def _enable_flathub(self):
+        if not messagebox.askyesno("Aevonyr App Hub", self.t("flathub_permission")):
+            return
+        try:
+            start(enable_flathub_command())
+        except (AppHubError, OSError) as exc:
+            messagebox.showerror("Aevonyr App Hub", str(exc))
+
+    def _open_discover(self):
+        binary = shutil.which("plasma-discover")
+        if not binary:
+            messagebox.showerror("Aevonyr App Hub", self.t("discover_missing"))
+            return
+        try:
+            subprocess.Popen([binary], start_new_session=True)
+        except OSError as exc:
+            messagebox.showerror("Aevonyr App Hub", str(exc))
+
+    def restore_page(self):
+        self._label(self.body, self.t("restore_desc"), 12, MUTED).pack(anchor="w", pady=(0, 18))
+        live = is_live_boot()
+        color = PINK if live else INK
+        self._label(self.body,
+            self.t("restore_live") if live else self.t("restore_installed"),
+            12, color, True).pack(anchor="w", pady=(0, 24))
+        row = tk.Frame(self.body, bg=BG)
+        row.pack(fill="x")
+        self._card(row, self.t("snapshot_title"), self.t("snapshot_desc"),
+            self._open_timeshift, self.t("open_timeshift")).pack(
+                side="left", fill="both", expand=True, padx=(0, 8))
+        self._card(row, self.t("backup_title"), self.t("backup_desc"),
+            self._open_backintime, self.t("open_backintime")).pack(
+                side="left", fill="both", expand=True, padx=(8, 0))
+        self._label(self.body, self.t("restore_warning"), 11, MUTED).pack(
+            anchor="w", pady=(28, 0))
+
+    def _open_timeshift(self):
+        if not messagebox.askyesno("Aevonyr OS", self.t("snapshot_warning")):
+            return
+        try:
+            start_tool(restore_command())
+        except (RestoreError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
+
+    def _open_backintime(self):
+        if is_live_boot() and not messagebox.askyesno(
+                "Aevonyr OS", self.t("live_backup_warning")):
+            return
+        try:
+            start_tool(backup_command())
+        except (RestoreError, OSError) as exc:
+            messagebox.showerror("Aevonyr OS", str(exc))
 
     def pick_windows(self):
         name = filedialog.askopenfilename(title=self.t("choose_exe"),
@@ -262,7 +582,16 @@ class AevonyrDesktop(tk.Tk):
         chooser.pack(anchor="w", pady=(0, 15))
         chooser.bind("<<ComboboxSelected>>", self._select_language)
         self._label(self.body, self.t("language_note"), 10, MUTED).pack(anchor="w")
+        self._button(self.body, self.t("open_welcome"), self.show_welcome).pack(
+            anchor="w", pady=(15, 0))
         self._button(self.body, self.t("import_language"), self._import_language).pack(anchor="w", pady=(21, 0))
+        self._label(self.body, self.t("session_actions"), 17, INK, True).pack(anchor="w", pady=(22, 12))
+        actions = tk.Frame(self.body, bg=BG)
+        actions.pack(anchor="w")
+        for action in ("lock", "logout", "reboot", "poweroff"):
+            self._button(actions, self.t("action_" + action),
+                         lambda selected=action: self._session_action(selected)).pack(
+                side="left", padx=(0, 9))
 
     def _import_language(self):
         path = filedialog.askopenfilename(title=self.t("import_language"), filetypes=[("JSON language pack", "*.json")])
@@ -291,7 +620,7 @@ class AevonyrDesktop(tk.Tk):
                 break
 
     def about_page(self):
-        self._label(self.body, "Aevonyr OS 0.5-dev", 22, INK, True).pack(anchor="w", pady=(0, 14))
+        self._label(self.body, "Aevonyr OS 1.0 Linux Live — Eclipse Edition", 22, INK, True).pack(anchor="w", pady=(0, 14))
         self._label(self.body, self.t("about_desc"), 12, MUTED).pack(anchor="w", pady=(0, 14))
         self._label(self.body, f"Python {platform.python_version()}  •  {platform.system()}",
                     11, MUTED).pack(anchor="w")

@@ -1,0 +1,72 @@
+# Kernel, filesystem and PC hardware firmware
+live-boot
+live-config
+live-config-systemd
+linux-image-amd64
+firmware-linux-free
+firmware-iwlwifi
+firmware-realtek
+
+# Genuine graphical KDE Wayland desktop, login and network tools
+task-kde-desktop
+plasma-workspace
+plasma-nm
+kdialog
+sddm
+qml6-module-qtquick-controls
+qml6-module-qtquick-layouts
+xwayland
+xdg-utils
+network-manager
+nm-connection-editor
+
+# Desktop applications and Aevonyr Python desktop overlay
+firefox-esr
+plasma-discover
+plasma-systemmonitor
+plasma-discover-backend-flatpak
+plasma-discover-backend-fwupd
+packagekit
+fwupd
+kdeconnect
+xdg-desktop-portal-kde
+flatpak
+libglib2.0-bin
+kde-cli-tools
+konsole
+dolphin
+kate
+ark
+okular
+python3
+python3-tk
+fonts-dejavu
+fonts-noto-core
+fonts-noto-color-emoji
+locales
+sudo
+curl
+wget
+ca-certificates
+pipewire-audio
+plymouth
+plymouth-themes
+plymouth-theme-breeze
+kde-config-plymouth
+wireplumber
+cups
+
+# Supported Windows executables through Wine
+wine
+wine64
+
+# Aevonyr Restore: system snapshots and personal backup
+timeshift
+backintime-qt
+btrfs-progs
+
+# Android container, from Debian Trixie backports; image init required
+waydroid
+
+# Disk installation via Debian Calamares settings
+calamares-settings-debian

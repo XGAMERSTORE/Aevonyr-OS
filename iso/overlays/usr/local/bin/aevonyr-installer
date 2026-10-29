@@ -1,0 +1,9 @@
+#!/bin/sh
+set -eu
+if ! command -v kdialog >/dev/null 2>&1; then
+    echo "The installer needs kdialog. Test installation in a disposable VM." >&2
+    exit 1
+fi
+kdialog --title "Install Aevonyr OS" --warningyesno \
+  "The installer can erase disks. Back up your data and test on a blank VirtualBox disk first. Continue?" || exit 0
+exec pkexec /usr/bin/calamares

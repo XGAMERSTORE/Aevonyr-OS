@@ -1,60 +1,38 @@
-# Aevonyr OS
+# Aevonyr OS 1.0 — Eclipse Edition 💜
 
 **One System. Two Worlds.**
 
-Aevonyr OS is a custom desktop project with an English-first interface, multilingual localization, and integrations for Windows and Android application compatibility.
+Aevonyr is an experimental Debian 13 Linux Live distribution with KDE Plasma, a branded control interface, Linux/Windows/Android application integration and local recovery tools.
 
-> Development status: This repository currently contains a functional **Python/Tk desktop app that runs inside an existing Linux session**, not yet a standalone operating system or a bootable installer ISO. The older LumaOS UEFI previews are separate prototypes and do not support Wine or Android.
+## New in 1.0
+- Aevonyr Pulse: actual CPU, RAM and storage utilization, uptime and a live historical graph (no fabricated data).
+- Aevonyr Launcher and Universal App Hub: native Linux, Flatpak and Waydroid applications.
+- Eclipse purple visuals, login screen, startup/shutdown animation and first-login setup.
+- KDE Discover software/firmware updates, KDE Connect Phone Link, system diagnostics.
+- Timeshift system snapshots and Back In Time personal-file backups.
+- Fixed ISO verification that incorrectly failed the previous 0.9 build after successfully creating an ISO.
+- BIOS and UEFI boot catalog, Linux squashfs and SHA256 image checks; experimental QEMU screenshot captures.
 
-## Features
+### Download
+Open https://github.com/XGAMERSTORE/Aevonyr-OS/actions/workflows/build-linux-iso.yml and choose the most recent successful Linux ISO build. Download the artifact named aevonyr-os-1.0.0-eclipse-live-amd64, unpack it, and check SHA256SUMS against Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso.
 
-- English is the default UI language. Settings can switch immediately between 10 starter languages: English, Czech, Slovak, German, Polish, French, Spanish, Italian, Portuguese, and Ukrainian.
-- Language packs are intentionally at different stages of completion; missing strings fall back to English.
-- Community JSON language packs can be imported from Settings or the CLI without rebuilding Aevonyr.
-- Dark-violet desktop shell with navigation, a file browser, persistent notes and runtime status.
-- Optional Wine integration for Windows EXE/MSI launch, if Wine is installed.
-- Optional Waydroid integration for Android APK installation, if Waydroid is installed, initialized and running in Wayland.
-- Confirmation before running selected Windows apps or installing Android APKs.
+### Applications and commands
+- aevonyr — graphical control application
+- aevonyr --pulse — real system resource dashboard
+- aevonyr --launcher — fullscreen installed application search
+- aevonyr --app-hub — combined application hub
+- aevonyr --welcome — first-run wizard
+- aevonyr --phone — KDE Connect
+- aevonyr --updates — KDE Discover and fwupd integrations
+- aevonyr --restore — Timeshift and Back In Time
+- aevonyr --diagnose — local diagnostic report
 
-## Run it on an existing Linux desktop
+### Build
+On Debian 13 with root permission and internet, install live-build, debootstrap, squashfs-tools, xorriso, grub-efi-amd64-bin and grub-pc-bin. Run sudo ./iso/build.sh to create an ISO in dist/.
 
-Use Python 3.10+ and Tkinter. On Debian or Ubuntu install Python and Tkinter using your package manager (for example: sudo apt install python3 python3-tk).
+Run Python tests with python3 -m unittest discover -s tests -v.
 
-Clone this repository and open a terminal in its root directory, then run:
+### Status and safety
+**1.0 Eclipse Edition is currently a Release Candidate, not a hardware-certified stable release.** A successful GitHub Actions build checks the image contents but does not prove correct graphical login, installation, hardware support or recovery. Test on a disposable VirtualBox machine using a blank virtual disk before installing on physical hardware. Wine/Waydroid compatibility varies. Aevonyr uses the KDE compositor rather than a proprietary new window system.
 
-    python3 -m aevonyr
-
-To list languages or install a sample Dutch language pack:
-
-    python3 -m aevonyr --languages
-    python3 -m aevonyr --install-language language-packs/nl-NL.json
-
-To see which compatibility backends are installed:
-
-    python3 -m aevonyr --check
-
-To launch a Windows executable or install an APK from a terminal:
-
-    python3 -m aevonyr --launch /path/to/file.exe
-
-APK installation is not the same as launching the Android app. You can open Waydroid from the Aevonyr Applications page. Not every Windows or Android application will work on Linux x86-64.
-
-## Structure
-
-- aevonyr/ui.py: graphical preview shell, file browser, notes, settings
-- aevonyr/compat.py: safe Wine/Waydroid subprocess integration
-- aevonyr/i18n.py and aevonyr/locales.json: translation foundation
-- aevonyr/config.py: user preferences and notes storage
-- tests: regression tests for translation and compatibility
-- docs: roadmap and integration guidelines
-
-Tests:
-
-    python3 -m unittest discover -s tests -v
-    python3 -m compileall -q aevonyr
-
-## Third-party components and licensing
-
-Aevonyr OS does not contain Wine or Waydroid source code or binaries, proprietary Microsoft or Google components, or an Android runtime. Wine and Waydroid belong to their respective upstream projects. Packaging them into a public ISO requires observing their respective license terms and providing appropriate notices. The repository owner will select the license for original Aevonyr source prior to public release.
-
-See docs/ROADMAP.md for the ISO milestone.
+See docs/RELEASE-1.0.md, docs/VIRTUALBOX-TEST.md and docs/LINUX-LIVE-ISO.md for limitations and testing. Third-party software licenses and an Aevonyr project license must be addressed before broad public distribution.

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Welcome
+Comment=Choose your language, connectivity, apps and backups
+Exec=/usr/local/bin/aevonyr --welcome
+Icon=preferences-system
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Colors
+Comment=Apply default colors once
+Exec=/usr/local/bin/aevonyr-colorscheme-init
+Icon=preferences-desktop-color
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true

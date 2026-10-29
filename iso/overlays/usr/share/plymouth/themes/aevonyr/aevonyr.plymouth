@@ -1,0 +1,8 @@
+[Plymouth Theme]
+Name=Aevonyr Eclipse
+Description=Purple animated boot and shutdown
+ModuleName=script
+
+[script]
+ImageDir=/usr/share/plymouth/themes/aevonyr
+ScriptFile=/usr/share/plymouth/themes/aevonyr/aevonyr.script

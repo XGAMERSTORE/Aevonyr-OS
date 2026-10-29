@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Install Aevonyr OS
+Comment=Back up data and first test on a blank VM disk
+Exec=/usr/local/bin/aevonyr-installer
+Icon=calamares
+Terminal=false
+Categories=System;

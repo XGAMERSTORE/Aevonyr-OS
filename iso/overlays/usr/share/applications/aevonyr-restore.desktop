@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr System Restore
+Comment=System snapshots and personal backup tools
+Exec=/usr/local/bin/aevonyr --restore
+Icon=drive-harddisk
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true
