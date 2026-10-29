@@ -40,14 +40,14 @@ jobs:
           '
       - name: Verify image
         run: |
-          test -s dist/Aevonyr-OS-0.7.2-Linux-Live-amd64.iso
+          test -s dist/Aevonyr-OS-0.8.0-Linux-Live-amd64.iso
           (cd dist && sha256sum -c SHA256SUMS)
           file dist/*.iso
           ls -lh dist/*.iso
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: aevonyr-os-0.7.2-linux-live-amd64
+          name: aevonyr-os-0.8.0-linux-live-amd64
           path: |
             dist/*.iso
             dist/SHA256SUMS

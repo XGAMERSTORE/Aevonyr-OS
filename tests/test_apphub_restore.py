@@ -58,11 +58,11 @@ class AppHubTests(unittest.TestCase):
 
     def test_commands_are_explicit_and_interactive(self):
         enable=enable_flathub_command(which=self.which)
-        self.assertEqual(enable[:3],("/usr/bin/konsole","-e","/usr/bin/flatpak"))
+        self.assertEqual(enable[:4],("/usr/bin/konsole","--hold","-e","/usr/bin/flatpak"))
         self.assertIn("--user",enable)
         install=install_flatpak_command("org.gimp.GIMP",which=self.which)
-        self.assertEqual(install,("/usr/bin/konsole","-e","/usr/bin/flatpak","--user",
-                                  "install","flathub","org.gimp.GIMP"))
+        self.assertEqual(install,("/usr/bin/konsole","--hold","-e","/usr/bin/flatpak","install","--user",
+                                  "flathub","org.gimp.GIMP"))
         with self.assertRaises(AppHubError):
             install_flatpak_command("org.gimp.GIMP;rm -rf /",which=self.which)
         with self.assertRaises(AppHubError):

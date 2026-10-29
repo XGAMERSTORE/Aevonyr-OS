@@ -182,7 +182,7 @@ def install_flatpak_command(identifier, which=shutil.which):
     if not binary:
         raise AppHubError("Flatpak is not installed.")
     # Interactive terminal: Flatpak itself asks before downloads/permissions.
-    return _terminal_plan((binary, "--user", "install", "flathub", identifier), which)
+    return _terminal_plan((binary, "install", "--user", "flathub", identifier), which)
 
 
 def start(command, popen=subprocess.Popen):

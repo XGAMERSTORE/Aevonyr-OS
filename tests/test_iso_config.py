@@ -6,12 +6,12 @@ ROOT = Path(__file__).resolve().parents[1]
 
 class LiveBuildConfigTests(unittest.TestCase):
     def test_shell_syntax(self):
-        for path in (ROOT/'iso/build.sh', ROOT/'iso/overlays/usr/local/bin/aevonyr-android-setup', ROOT/'iso/overlays/usr/local/bin/aevonyr-installer', ROOT/'iso/hooks/normal/0100-aevonyr-splash.hook.chroot'):
+        for path in (ROOT/'iso/build.sh', ROOT/'iso/overlays/usr/local/bin/aevonyr-android-setup', ROOT/'iso/overlays/usr/local/bin/aevonyr-installer', ROOT/'iso/overlays/usr/local/bin/aevonyr-colorscheme-init', ROOT/'iso/hooks/normal/0100-aevonyr-splash.hook.chroot'):
             subprocess.run(['bash','-n',str(path)],check=True)
     def test_package_list(self):
         lines = (ROOT/'iso/package-lists/desktop.list.chroot').read_text().splitlines()
         packages = [x.strip() for x in lines if x.strip() and not x.lstrip().startswith('#')]
-        required = {'linux-image-amd64','task-kde-desktop','network-manager','firefox-esr','wine','waydroid','calamares-settings-debian','python3-tk'}
+        required = {'linux-image-amd64','task-kde-desktop','network-manager','firefox-esr','wine','waydroid','calamares-settings-debian','python3-tk','flatpak','plasma-discover-backend-flatpak','timeshift','backintime-qt','btrfs-progs'}
         self.assertTrue(required.issubset(set(packages)))
         self.assertEqual(len(packages),len(set(packages)))
     def test_branding(self):
@@ -36,6 +36,19 @@ class LiveBuildConfigTests(unittest.TestCase):
         text=(ROOT/'iso/overlays/usr/local/bin/aevonyr-installer').read_text()
         self.assertIn('kdialog --title',text)
         self.assertIn('exec pkexec /usr/bin/calamares',text)
+
+    def test_app_hub_restore_and_color_scheme(self):
+        root = ROOT/'iso/overlays'
+        for name, cli in (('aevonyr-launcher.desktop', '--launcher'),
+                          ('aevonyr-app-hub.desktop', '--app-hub'),
+                          ('aevonyr-restore.desktop', '--restore')):
+            self.assertIn('Exec=/usr/local/bin/aevonyr ' + cli,
+                          (root/'usr/share/applications'/name).read_text())
+        self.assertIn('Name=Aevonyr Eclipse',
+                      (root/'usr/share/color-schemes/AevonyrEclipse.colors').read_text())
+        self.assertIn('plasma-apply-colorscheme AevonyrEclipse',
+                      (root/'usr/local/bin/aevonyr-colorscheme-init').read_text())
+        self.assertIn('Aevonyr-OS-0.8.0-Linux-Live-amd64.iso', (ROOT/'iso/build.sh').read_text())
 
     def test_desktop_files(self):
         files = ROOT/'iso/overlays'

@@ -23,6 +23,10 @@ nm-connection-editor
 # Desktop applications and Aevonyr Python desktop overlay
 firefox-esr
 plasma-discover
+plasma-discover-backend-flatpak
+flatpak
+libglib2.0-bin
+kde-cli-tools
 konsole
 dolphin
 kate
@@ -49,6 +53,11 @@ cups
 # Supported Windows executables through Wine
 wine
 wine64
+
+# Aevonyr Restore: system snapshots and personal backup
+timeshift
+backintime-qt
+btrfs-progs
 
 # Android container, from Debian Trixie backports; image init required
 waydroid
