@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Launcher
+Comment=Search Linux, Flatpak and Android apps
+Exec=/usr/local/bin/aevonyr --launcher
+Icon=start-here-kde
+Terminal=false
+Categories=System;Utility;
+StartupNotify=true
