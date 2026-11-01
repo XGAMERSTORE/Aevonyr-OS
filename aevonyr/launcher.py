@@ -22,7 +22,10 @@ class AevonyrLauncher(tk.Tk):
         super().__init__()
         self.title('Aevonyr Orbit')
         self.configure(bg=BG)
-        self.attributes('-fullscreen', True)
+        width = min(760, self.winfo_screenwidth() - 48)
+        height = min(660, self.winfo_screenheight() - 80)
+        self.geometry(f'{width}x{height}+80+48')
+        self.minsize(540, 480)
         self.bind('<Escape>', lambda event: self.destroy())
         self.bind('<Return>', self.launch_selected)
         self.bind('<Down>', lambda event: self.move_selection(1))
@@ -47,41 +50,35 @@ class AevonyrLauncher(tk.Tk):
                          highlightcolor=ACCENT)
 
     def _build(self):
-        # A compact rail and two spacious columns; no Windows-style start menu.
-        rail = tk.Frame(self, bg='#151920', width=88)
-        rail.pack(side='left', fill='y')
-        rail.pack_propagate(False)
-        self._button(rail, '◒', lambda: self.query.set(''), True).pack(padx=12, pady=28)
-        tk.Label(rail, text='O\nR\nB\nI\nT', bg='#151920', fg=MUTED,
-                 font=('DejaVu Sans', 10), pady=20).pack()
-        self._button(rail, 'Esc', self.destroy).pack(side='bottom', padx=8, pady=24)
         main = tk.Frame(self, bg=BG)
-        main.pack(fill='both', expand=True, padx=32, pady=24)
+        main.pack(fill='both', expand=True, padx=24, pady=20)
         top = tk.Frame(main, bg=BG)
-        top.pack(fill='x')
-        tk.Label(top, text='A E V O N Y R   /   O R B I T', bg=BG, fg=ACCENT,
-                 font=('DejaVu Sans', 11, 'bold')).pack(side='left')
-        self.clock = tk.Label(top, bg=BG, fg=MUTED, font=('DejaVu Sans', 11))
+        top.pack(fill='x', pady=(0, 20))
+        tk.Label(top, text='◒  Orbit', bg=BG, fg=INK,
+                 font=('DejaVu Sans', 22, 'bold')).pack(side='left')
+        self.clock = tk.Label(top, bg=BG, fg=MUTED, font=('DejaVu Sans', 10))
         self.clock.pack(side='right')
-        content = tk.Frame(main, bg=BG)
-        content.pack(fill='both', expand=True, pady=(24, 12))
-        content.columnconfigure(0, weight=3)
-        content.columnconfigure(1, weight=2)
-        content.rowconfigure(0, weight=1)
-        left = tk.Frame(content, bg=BG)
-        left.grid(row=0, column=0, sticky='nsew', padx=(0, 24))
-        tk.Label(left, text='Your next\npossibility.', bg=BG, fg=INK,
-                 font=('DejaVu Sans', 32, 'bold'), justify='left', anchor='w').pack(fill='x')
-        tk.Label(left, text='Find an app. Make something yours.', bg=BG,
-                 fg=MUTED, font=('DejaVu Sans', 11), anchor='w').pack(fill='x', pady=(10, 20))
-        tk.Label(left, text='SEARCH APPLICATIONS', bg=BG, fg=ACCENT,
-                 font=('DejaVu Sans', 9, 'bold'), anchor='w').pack(fill='x', pady=(0, 8))
-        self.search = tk.Entry(left, textvariable=self.query, font=('DejaVu Sans', 16),
+        left = main
+        tk.Label(main, text='Search your applications', bg=BG, fg=MUTED,
+                 anchor='w', font=('DejaVu Sans', 10)).pack(fill='x', pady=(0, 8))
+        self.search = tk.Entry(main, textvariable=self.query, font=('DejaVu Sans', 16),
                               bg=PANEL, fg=INK, insertbackground=ACCENT, relief='flat',
                               highlightthickness=1, highlightbackground='#39463b',
                               highlightcolor=ACCENT)
-        self.search.pack(fill='x', ipady=12)
+        self.search.pack(fill='x', ipady=10)
         self.search.focus_set()
+        tk.Label(main, text='QUICK ACCESS', bg=BG, fg=MUTED,
+                 font=('DejaVu Sans', 9), anchor='w').pack(fill='x', pady=(20, 10))
+        actions = tk.Frame(main, bg=BG)
+        actions.pack(fill='x')
+        for index, (title, command) in enumerate([
+            ('▣  Files', ['dolphin']), ('◎  Web', ['firefox-esr']),
+            ('◴  Pulse', ['aevonyr', '--pulse']), ('⊞  Apps', ['aevonyr', '--app-hub'])]):
+            actions.columnconfigure(index, weight=1, uniform='quick')
+            self._button(actions, title, lambda c=command: self.open_command(c),
+                         index == 0).grid(row=0, column=index, sticky='ew', padx=(0, 6))
+        tk.Label(main, text='APPLICATIONS', bg=BG, fg=MUTED,
+                 font=('DejaVu Sans', 9), anchor='w').pack(fill='x', pady=(20, 0))
         holder = tk.Frame(left, bg=BG)
         holder.pack(fill='both', expand=True, pady=(14, 0))
         style = ttk.Style(self)
@@ -102,42 +99,11 @@ class AevonyrLauncher(tk.Tk):
         self.status = tk.Label(left, text='Discovering installed applications…',
                                bg=BG, fg=MUTED, anchor='w', font=('DejaVu Sans', 10))
         self.status.pack(fill='x', pady=(12, 0))
-        right = tk.Frame(content, bg=PANEL)
-        right.grid(row=0, column=1, sticky='nsew')
-        self.art = tk.Canvas(right, bg=PANEL, height=180, highlightthickness=0)
-        self.art.pack(fill='both', expand=True)
-        self.art.bind('<Configure>', lambda _: self._draw())
-        tk.Label(right, text='A space for your ideas.', bg=PANEL, fg=INK,
-                 font=('DejaVu Sans', 15, 'bold')).pack(pady=(0, 10))
-        actions = tk.Frame(right, bg=PANEL)
-        actions.pack(fill='x', padx=18, pady=(0, 18))
-        actions.columnconfigure(0, weight=1)
-        actions.columnconfigure(1, weight=1)
-        for index, (title, command) in enumerate([
-            ('Files ↗', ['dolphin']), ('Web ↗', ['firefox-esr']),
-            ('Pulse ↗', ['aevonyr', '--pulse']), ('App Hub ↗', ['aevonyr', '--app-hub'])]):
-            self._button(actions, title, lambda c=command: self.open_command(c),
-                         index == 0).grid(row=index // 2, column=index % 2,
-                                          sticky='ew', padx=3, pady=3)
         footer = tk.Frame(main, bg=BG)
         footer.pack(fill='x')
         tk.Label(footer, text='↑ ↓  Navigate    Enter  Open    Esc  Return',
                  bg=BG, fg=MUTED, font=('DejaVu Sans', 9)).pack(side='left')
         self._button(footer, 'About Aevonyr', self.show_about).pack(side='right')
-
-    def _draw(self):
-        c = self.art
-        c.delete('all')
-        w, h = c.winfo_width(), c.winfo_height()
-        x, y, r = w * .5, h * .5, min(w, h) * .34
-        for scale, color in [(1.24, '#29342c'), (1.0, '#51694b'), (.76, '#91b977')]:
-            c.create_oval(x-r*scale, y-r*scale, x+r*scale, y+r*scale,
-                          outline=color, width=1)
-        c.create_arc(x-r, y-r, x+r, y+r, start=32, extent=242,
-                     style='arc', outline=ACCENT, width=6)
-        c.create_oval(x+r*.74-6, y-r*.67-6, x+r*.74+6, y-r*.67+6,
-                      fill=INK, outline='')
-        c.create_text(x, y, text='a', fill=INK, font=('DejaVu Sans', 58))
 
     def _tick(self):
         self.clock.config(text=datetime.now().strftime('%a %d %b   /   %H:%M'))
@@ -221,3 +187,4 @@ class AevonyrLauncher(tk.Tk):
             'KDE Plasma and KWin provide the desktop and window management.\n'
             'Third-party components retain their names and licenses.\n'
             'Package copyright notices: /usr/share/doc/<package>/copyright')
+

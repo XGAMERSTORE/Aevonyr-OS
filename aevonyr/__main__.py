@@ -7,7 +7,7 @@ from .diagnostics import diagnose, format_report
 def main():
     parser = argparse.ArgumentParser(description="Aevonyr OS 1.0 Eclipse Edition")
     parser.add_argument("--check", action="store_true", help="check runtime availability")
-    parser.add_argument("--launcher", action="store_true", help="open fullscreen Aevonyr launcher")
+    parser.add_argument("--launcher", action="store_true", help="open compact Aevonyr launcher")
     parser.add_argument("--app-hub", action="store_true", help="open Universal App Hub")
     parser.add_argument("--welcome", action="store_true", help="open Aevonyr first-run wizard")
     parser.add_argument("--updates", action="store_true", help="open software and firmware update center")
@@ -18,7 +18,11 @@ def main():
     parser.add_argument("--launch", metavar="FILE", help="launch EXE/MSI or install APK")
     parser.add_argument("--languages", action="store_true", help="list installed interface languages")
     parser.add_argument("--install-language", metavar="JSON", help="install a community language pack")
+    parser.add_argument("--open", metavar="FILE", help="open an application package with graphical feedback")
     args = parser.parse_args()
+    if args.open:
+        from .package_ui import open_package
+        return open_package(args.open)
     if args.languages:
         count = len(CATALOG["en"])
         for code, name in sorted(LANGUAGES.items()):

@@ -11,10 +11,10 @@ from PIL import ImageGrab
 apps=[App('Linux',name, '/tmp/test-'+str(i)+'.desktop') for i,name in enumerate(
     ['Aevonyr Control', 'Firefox ESR', 'Files', 'Kate', 'Konsole', 'Aevonyr Pulse'])]
 Path('dist').mkdir(exist_ok=True)
-for w,h in [(1440,900),(1024,768)]:
+for w,h in [(760,660),(600,540)]:
     with patch('aevonyr.launcher.installed_apps',return_value=apps):
         root=AevonyrLauncher()
-        root.attributes('-fullscreen',False)
+        assert not root.attributes('-fullscreen')
         root.geometry(f'{w}x{h}+0+0')
         try:
             for _ in range(12):root.update();time.sleep(.03)

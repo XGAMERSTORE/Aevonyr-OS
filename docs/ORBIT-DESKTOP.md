@@ -50,3 +50,36 @@ The About dialog explicitly identifies this foundation. Do not market this as a 
 kernel or guarantee that nobody will recognize Linux. Before public distribution,
 review project licensing, bundled artwork and all third-party distribution obligations.
 No release-stability claim is made by this design change.
+
+## Compact Orbit and double-click packages
+
+Orbit now opens as a compact, resizable window (normally 760 × 660), with
+quick access cards and application search. Escape returns to the desktop.
+It is still a Tk window, not a native blurred Plasma popup; blur, custom
+window chrome and animated transitions are not implemented. The earlier
+`orbit-preview.png` shows the superseded fullscreen design; current UI
+screenshots are uploaded by the GUI smoke workflow.
+
+Fresh images install system MIME defaults for EXE, MSI, APK and DEB through
+`aevonyr-package.desktop`. Existing explicit user file associations take
+precedence. No manual file association is required on a fresh profile.
+
+- EXE: open in Wine; MSI: open the Wine installation wizard.
+- APK: show Install/Cancel, read the package ID, check Android readiness,
+  start an initialized session if needed, install and show Open/Close.
+  Missing Android initialization has a Set up Android action. That setup
+  downloads the Android image and uses the existing privilege prompt.
+- DEB: open Discover's local-package installer; authorization stays with
+  the system package manager.
+
+An APK is an installation package, not a portable executable. Installed
+Android apps are listed by Orbit. ARM-only APKs, Google Play services,
+Windows drivers, anti-cheat and unsupported APIs are not made compatible
+by file associations. Wine and Waydroid execute real code; use trusted files.
+The launcher does not run Windows applications as root and does not execute
+shell command strings derived from file names.
+
+Validation still needed in a disposable live/installed VM: double-click
+known benign EXE/MSI/APK/DEB, fresh Android setup, an incompatible APK,
+logout/login, and verifying application entries after installation.
+Unit tests mock runtimes; they are not compatibility certification.

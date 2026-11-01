@@ -1,0 +1,9 @@
+[Default Applications]
+application/vnd.microsoft.portable-executable=aevonyr-package.desktop;
+application/x-ms-dos-executable=aevonyr-package.desktop;
+application/x-msdownload=aevonyr-package.desktop;
+application/x-msi=aevonyr-package.desktop;
+application/x-ms-installer=aevonyr-package.desktop;
+application/vnd.android.package-archive=aevonyr-package.desktop;
+application/vnd.debian.binary-package=aevonyr-package.desktop;
+application/x-deb=aevonyr-package.desktop;

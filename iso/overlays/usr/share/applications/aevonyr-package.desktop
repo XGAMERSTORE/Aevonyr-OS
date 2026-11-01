@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Aevonyr Application Installer
+Name[cs]=Instalace aplikací Aevonyr
+Exec=/usr/local/bin/aevonyr --open %f
+Icon=system-software-install
+Terminal=false
+NoDisplay=true
+MimeType=application/vnd.microsoft.portable-executable;application/x-ms-dos-executable;application/x-msdownload;application/x-msi;application/x-ms-installer;application/vnd.android.package-archive;application/vnd.debian.binary-package;application/x-deb;
+Categories=System;
