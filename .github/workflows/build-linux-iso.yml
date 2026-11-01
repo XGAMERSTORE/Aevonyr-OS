@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - feature/linux-live-distro
+      - feature/aevonyr-orbit-desktop
     paths:
       - 'iso/**'
       - 'aevonyr/**'
+      - 'scripts/**'
       - '.github/workflows/build-linux-iso.yml'
 permissions:
   contents: read

@@ -2,7 +2,7 @@
 set -eu
 WALLPAPER=/usr/share/backgrounds/aevonyr/aevonyr-neon.svg
 STATE="$HOME/.local/state/aevonyr"
-MARKER="$STATE/wallpaper-applied-v1"
+MARKER="$STATE/wallpaper-applied-orbit-v1"
 [ -e "$MARKER" ] && exit 0
 command -v plasma-apply-wallpaperimage >/dev/null 2>&1 || exit 0
 [ -r "$WALLPAPER" ] || exit 0

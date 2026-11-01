@@ -24,14 +24,14 @@ from .onboarding import completed
 from .integrations import IntegrationError, available_tools, paired_device_count
 from .integrations import start_tool as start_integration
 
-BG = "#100e1c"
-SIDE = "#191528"
-PANEL = "#241b37"
-PANEL2 = "#39244d"
-ACCENT = "#ad7cff"
-INK = "#f6f0ff"
-MUTED = "#bfb1cf"
-PINK = "#ef81d9"
+BG = "#101319"
+SIDE = "#151920"
+PANEL = "#1b2029"
+PANEL2 = "#29342c"
+ACCENT = "#c4ef9c"
+INK = "#edf1ed"
+MUTED = "#a4afa9"
+PINK = "#c4ef9c"
 
 class AevonyrDesktop(tk.Tk):
     def __init__(self):
@@ -91,7 +91,7 @@ class AevonyrDesktop(tk.Tk):
                         bg=bg, fg=color, anchor="w", justify="left")
 
     def _card(self, parent, title, description, action, button_text):
-        card = tk.Frame(parent, bg=PANEL, highlightbackground="#59416c", highlightthickness=1)
+        card = tk.Frame(parent, bg=PANEL, highlightbackground="#39463b", highlightthickness=1)
         self._label(card, title, 16, INK, True, PANEL).pack(anchor="w", padx=20, pady=(18, 9))
         tk.Label(card, text=description, bg=PANEL, fg=MUTED, justify="left",
                  wraplength=290, anchor="w", font=("DejaVu Sans", 10)).pack(
@@ -273,7 +273,7 @@ class AevonyrDesktop(tk.Tk):
     def system_page(self):
         self._label(self.body, self.t("system_desc"), 12, MUTED).pack(anchor="w", pady=(0, 16))
         details = diagnose()
-        card = tk.Frame(self.body, bg=PANEL, highlightbackground="#59416c", highlightthickness=1)
+        card = tk.Frame(self.body, bg=PANEL, highlightbackground="#39463b", highlightthickness=1)
         card.pack(fill="both", expand=True, pady=(0, 14))
         self._label(card, format_report(details), 12, INK, False, PANEL).pack(
             anchor="w", padx=20, pady=25)
@@ -322,7 +322,7 @@ class AevonyrDesktop(tk.Tk):
         scrollbar = tk.Scrollbar(listed)
         scrollbar.pack(side="right", fill="y")
         self.app_listbox = tk.Listbox(
-            listed, bg=PANEL, fg=INK, selectbackground="#7046a2",
+            listed, bg=PANEL, fg=INK, selectbackground="#354a3b",
             selectforeground=INK, highlightthickness=0, bd=0, height=8,
             activestyle="none", font=("DejaVu Sans", 10),
             yscrollcommand=scrollbar.set,
@@ -340,7 +340,7 @@ class AevonyrDesktop(tk.Tk):
 
         self._label(self.body, self.t("featured_flatpak"), 12, INK, True).pack(anchor="w", pady=(7, 6))
         self.featured_listbox = tk.Listbox(
-            self.body, bg=PANEL, fg=INK, selectbackground="#7046a2",
+            self.body, bg=PANEL, fg=INK, selectbackground="#354a3b",
             selectforeground=INK, highlightthickness=0, bd=0,
             font=("DejaVu Sans", 10), height=4, exportselection=False,
         )
@@ -502,11 +502,11 @@ class AevonyrDesktop(tk.Tk):
         self._button(toolbar, "↑  " + self.t("up"), self._go_up).pack(side="left", padx=(0, 11))
         self._button(toolbar, self.t("browse"), self._browse_dir).pack(side="left")
         self._label(self.body, str(self.current_dir), 10, MUTED).pack(anchor="w", pady=(0, 12))
-        frame = tk.Frame(self.body, bg=PANEL, highlightthickness=1, highlightbackground="#514164")
+        frame = tk.Frame(self.body, bg=PANEL, highlightthickness=1, highlightbackground="#39463b")
         frame.pack(fill="both", expand=True)
         scrollbar = tk.Scrollbar(frame)
         scrollbar.pack(side="right", fill="y")
-        self.file_list = tk.Listbox(frame, bg=PANEL, fg=INK, selectbackground="#694599",
+        self.file_list = tk.Listbox(frame, bg=PANEL, fg=INK, selectbackground="#354a3b",
                                     selectforeground=INK, borderwidth=0, highlightthickness=0,
                                     font=("DejaVu Sans Mono", 11), activestyle="none",
                                     yscrollcommand=scrollbar.set)

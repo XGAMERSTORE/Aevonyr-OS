@@ -70,3 +70,6 @@ waydroid
 
 # Disk installation via Debian Calamares settings
 calamares-settings-debian
+
+# Plasma scripting transport for the Orbit layout
+qdbus-qt6

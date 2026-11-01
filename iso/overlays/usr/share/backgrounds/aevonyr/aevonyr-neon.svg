@@ -1,7 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
-<defs><radialGradient id="bg"><stop stop-color="#312153"/><stop offset=".55" stop-color="#140d2e"/><stop offset="1" stop-color="#070614"/></radialGradient><radialGradient id="halo"><stop stop-color="#ef93ea" stop-opacity=".45"/><stop offset="1" stop-color="#a454ea" stop-opacity="0"/></radialGradient><linearGradient id="orb"><stop stop-color="#fa97e9"/><stop offset=".5" stop-color="#a367f7"/><stop offset="1" stop-color="#5ae0f6"/></linearGradient></defs>
-<rect width="1920" height="1080" fill="url(#bg)"/><circle cx="1170" cy="500" r="495" fill="url(#halo)"/><circle cx="1170" cy="490" r="243" fill="none" stroke="url(#orb)" stroke-width="28"/><circle cx="1218" cy="460" r="225" fill="#17102d"/>
-<path d="M0 830Q400 700 800 835T1920 800V1080H0Z" fill="#110b24" opacity=".8"/><path d="M0 910Q500 845 900 970T1920 850V1080H0Z" fill="#1b1136"/>
-<g fill="#e5cdfa" opacity=".85"><circle cx="360" cy="240" r="3"/><circle cx="480" cy="370" r="2"/><circle cx="1580" cy="190" r="3"/></g>
-<text x="135" y="175" fill="#f6edff" font-family="sans-serif" font-size="72" letter-spacing="11" font-weight="600">AEVONYR</text><text x="140" y="227" fill="#c7addf" font-family="sans-serif" font-size="24" letter-spacing="6">ONE SYSTEM. TWO WORLDS.</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+<defs><radialGradient id="halo"><stop stop-color="#334035"/><stop offset="1" stop-color="#101319"/></radialGradient><linearGradient id="arc" x2="1" y2="1"><stop stop-color="#c4ef9c"/><stop offset="1" stop-color="#718780"/></linearGradient></defs>
+<rect width="3840" height="2160" fill="#101319"/><ellipse cx="2780" cy="1100" rx="1400" ry="1400" fill="url(#halo)"/>
+<g fill="none" stroke="#354038"><circle cx="2730" cy="1120" r="710"/><circle cx="2730" cy="1120" r="560"/><circle cx="2730" cy="1120" r="420"/></g>
+<path d="M3170 773 A560 560 0 1 0 3150 1490" fill="none" stroke="url(#arc)" stroke-width="16" stroke-linecap="round"/>
+<circle cx="3170" cy="773" r="18" fill="#edf1ed"/>
+<text x="300" y="1000" fill="#edf1ed" font-family="sans-serif" font-size="104" letter-spacing="18">AEVONYR</text>
+<path d="M304 1075h108" stroke="#c4ef9c" stroke-width="5"/>
+<text x="300" y="1170" fill="#a4afa9" font-family="sans-serif" font-size="30" letter-spacing="7">A SPACE FOR YOUR IDEAS.</text>
+<text x="300" y="1930" fill="#718078" font-family="sans-serif" font-size="22" letter-spacing="5">ORBIT / 01</text></svg>

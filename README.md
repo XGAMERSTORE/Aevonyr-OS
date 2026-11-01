@@ -36,3 +36,9 @@ Run Python tests with python3 -m unittest discover -s tests -v.
 **1.0 Eclipse Edition is currently a Release Candidate, not a hardware-certified stable release.** A successful GitHub Actions build checks the image contents but does not prove correct graphical login, installation, hardware support or recovery. Test on a disposable VirtualBox machine using a blank virtual disk before installing on physical hardware. Wine/Waydroid compatibility varies. Aevonyr uses the KDE compositor rather than a proprietary new window system.
 
 See docs/RELEASE-1.0.md, docs/VIRTUALBOX-TEST.md and docs/LINUX-LIVE-ISO.md for limitations and testing. Third-party software licenses and an Aevonyr project license must be addressed before broad public distribution.
+
+## Orbit desktop preview
+
+The Orbit review branch adds a new application overview, left task rail, top status
+bar and original graphite/lime artwork. See [Orbit setup, rollback and test limits](docs/ORBIT-DESKTOP.md).
+It remains a Debian/KDE-based experimental distribution. Previously built ISOs do not include this redesign.
