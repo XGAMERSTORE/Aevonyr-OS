@@ -52,13 +52,13 @@ class PackageTests(unittest.TestCase):
         path=self.file('x.apk')
         run=Mock(side_effect=[self.result("package: name='com.example.demo'"),
             self.result('Session: STOPPED'),
-            self.result('Session: RUNNING\nContainer: RUNNING'),self.result()])
+            self.result('Session: RUNNING\nContainer: RUNNING'),self.result(), self.result('packageName: com.example.demo')])
         popen=Mock()
         with patch.dict('os.environ', {'XDG_SESSION_TYPE':'wayland'}), patch('aevonyr.packages.Path.is_file', return_value=True):
             package=install_apk(path, which=self.which, run=run, popen=popen)
         self.assertEqual(package, 'com.example.demo')
         self.assertEqual(popen.call_args.args[0], ['/usr/bin/waydroid','session','start'])
-        self.assertEqual(run.call_args.args[0], ['/usr/bin/waydroid','app','install',str(path)])
+        self.assertEqual(run.call_args_list[-2].args[0], ['/usr/bin/waydroid','app','install',str(path)])
     def test_install_failure_never_returns_success(self):
         path=self.file('x.apk')
         run=Mock(side_effect=[self.result("package: name='com.example.demo'"),
@@ -66,4 +66,13 @@ class PackageTests(unittest.TestCase):
             self.result('INSTALL_FAILED_NO_MATCHING_ABIS', 1)])
         with patch.dict('os.environ', {'XDG_SESSION_TYPE':'wayland'}), patch('aevonyr.packages.Path.is_file', return_value=True):
             with self.assertRaisesRegex(CompatibilityError, 'NO_MATCHING_ABIS'):
+                install_apk(path, which=self.which, run=run)
+
+    def test_android_zero_exit_failure_is_not_success(self):
+        path=self.file('x.apk')
+        run=Mock(side_effect=[self.result("package: name='com.example.demo'"),
+            self.result('Session: RUNNING'),self.result('Session: RUNNING\nContainer: RUNNING'),
+            self.result('Failure [INSTALL_FAILED_INVALID_APK]')])
+        with patch.dict('os.environ', {'XDG_SESSION_TYPE':'wayland'}), patch('aevonyr.packages.Path.is_file', return_value=True):
+            with self.assertRaisesRegex(CompatibilityError, 'INVALID_APK'):
                 install_apk(path, which=self.which, run=run)

@@ -63,5 +63,11 @@ def install_apk(filename, progress=lambda _: None, which=shutil.which,
     else:
         raise CompatibilityError('Android did not start. Use Set up Android and check the container service.')
     progress('Installing Android application…')
-    checked(command, 180, run)
+    output = checked(command, 180, run)
+    # Some runtime versions report Android package-manager failures in output.
+    if re.search(r'INSTALL_FAILED|Failure \[|Failed to install', output, re.I):
+        raise CompatibilityError(output[-2500:])
+    apps = checked([waydroid, 'app', 'list'], 30, run)
+    if not re.search(r'^\s*packageName:\s*' + re.escape(package) + r'\s*$', apps, re.M | re.I):
+        raise CompatibilityError('Android did not confirm this application was installed.')
     return package

@@ -19,7 +19,8 @@ Open https://github.com/XGAMERSTORE/Aevonyr-OS/actions/workflows/build-linux-iso
 ### Applications and commands
 - aevonyr — graphical control application
 - aevonyr --pulse — real system resource dashboard
-- aevonyr --launcher — fullscreen installed application search
+- aevonyr --launcher — compact Orbit application search
+- aevonyr --open FILE — graphical EXE/MSI/APK/DEB opening (also the default file handler)
 - aevonyr --app-hub — combined application hub
 - aevonyr --welcome — first-run wizard
 - aevonyr --phone — KDE Connect
