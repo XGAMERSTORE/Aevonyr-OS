@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 from types import SimpleNamespace
 from aevonyr.apphub import App
-from aevonyr.launcher import matching_apps
+from aevonyr.orbit_search import matching_apps
 
 ROOT = Path(__file__).resolve().parents[1]
 loader = importlib.machinery.SourceFileLoader('orbit_setup', str(ROOT / 'iso/overlays/usr/local/bin/aevonyr-orbit-layout'))

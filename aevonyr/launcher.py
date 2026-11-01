@@ -15,16 +15,7 @@ MUTED = '#a4afa9'
 ACCENT = '#c4ef9c'
 
 
-def matching_apps(apps, query):
-    """Every word must match; an exact name and then a prefix rank first."""
-    words = query.casefold().split()
-    query = query.strip().casefold()
-    matches = [app for app in apps if all(
-        word in (app.name + ' ' + app.source).casefold() for word in words)]
-    return sorted(matches, key=lambda app: (
-        app.name.casefold() != query,
-        not app.name.casefold().startswith(query), app.name.casefold()))
-
+from .orbit_search import matching_apps
 
 class AevonyrLauncher(tk.Tk):
     def __init__(self):
