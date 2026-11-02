@@ -2,7 +2,7 @@
 
 **A little home for big stories — for Niki.**
 
-Bookish OS (formerly Bookish OS) is an experimental Debian 13 Linux Live distribution with KDE Plasma, a branded control interface, Linux/Windows/Android application integration and local recovery tools.
+Bookish OS (formerly Aevonyr OS) is an experimental Debian 13 Linux Live distribution with KDE Plasma, a branded control interface, Linux/Windows/Android application integration and local recovery tools.
 
 ## Bookish library
 - Local EPUB/PDF/TXT bookshelf, manually recorded reading percentage and notes: `bookish --books`.
