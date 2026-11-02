@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr App Hub
+Name=Bookish App Hub
 Comment=Native, Windows, Android and Flatpak applications
 Exec=/usr/local/bin/aevonyr --app-hub
 Icon=system-software-install

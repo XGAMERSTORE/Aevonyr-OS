@@ -8,6 +8,17 @@ if [[ "${XDG_SESSION_TYPE:-}" != "wayland" && -z "${WAYLAND_DISPLAY:-}" ]]; then
   echo "Please log in using a Wayland desktop session." >&2
   exit 1
 fi
+# A successful download alone is not a completed initialization.
+ready() {
+  /usr/bin/python3 -m aevonyr.android_state
+}
+if ready; then
+  echo "Android is already initialized. Starting its service without downloading again."
+  pkexec systemctl start waydroid-container.service
+  echo "Service started. Return to the application window and choose Retry."
+  exit 0
+fi
+echo "Android is not fully initialized. Existing downloads will not be deliberately erased."
 echo "Waydroid needs a one-time Android system image download."
 echo "Changes in Live mode are temporary. Install to disk for persistence."
 read -r -p "Initialize the Android runtime? [y/N] " answer
@@ -16,5 +27,9 @@ case "$answer" in
  *) exit 0 ;;
 esac
 pkexec waydroid init
+if ! ready; then
+  echo "Initialization did not produce the expected config and images. Keep this terminal output for diagnosis." >&2
+  exit 1
+fi
 pkexec systemctl start waydroid-container.service
-echo "Android initialized. Open it from the Aevonyr Applications page."
+echo "Android initialized. Open it from the Bookish Applications page."

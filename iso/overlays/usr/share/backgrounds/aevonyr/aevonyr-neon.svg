@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
-<defs><radialGradient id="halo"><stop stop-color="#334035"/><stop offset="1" stop-color="#101319"/></radialGradient><linearGradient id="arc" x2="1" y2="1"><stop stop-color="#c4ef9c"/><stop offset="1" stop-color="#718780"/></linearGradient></defs>
-<rect width="3840" height="2160" fill="#101319"/><ellipse cx="2780" cy="1100" rx="1400" ry="1400" fill="url(#halo)"/>
-<g fill="none" stroke="#354038"><circle cx="2730" cy="1120" r="710"/><circle cx="2730" cy="1120" r="560"/><circle cx="2730" cy="1120" r="420"/></g>
-<path d="M3170 773 A560 560 0 1 0 3150 1490" fill="none" stroke="url(#arc)" stroke-width="16" stroke-linecap="round"/>
-<circle cx="3170" cy="773" r="18" fill="#edf1ed"/>
-<text x="300" y="1000" fill="#edf1ed" font-family="sans-serif" font-size="104" letter-spacing="18">AEVONYR</text>
-<path d="M304 1075h108" stroke="#c4ef9c" stroke-width="5"/>
-<text x="300" y="1170" fill="#a4afa9" font-family="sans-serif" font-size="30" letter-spacing="7">A SPACE FOR YOUR IDEAS.</text>
-<text x="300" y="1930" fill="#718078" font-family="sans-serif" font-size="22" letter-spacing="5">ORBIT / 01</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 1920 1080">
+<rect width="1920" height="1080" fill="#f5efe5"/>
+<circle cx="1520" cy="330" r="400" fill="#e8dfd2"/>
+<path d="M0 880 Q550 680 1050 920 T1920 850 V1080 H0Z" fill="#d9dfcd"/>
+<g transform="translate(1150 360) rotate(-8)"><rect x="0" y="0" width="78" height="300" rx="9" fill="#829b80"/><rect x="90" y="45" width="64" height="255" rx="7" fill="#c89591"/><rect x="166" y="-20" width="90" height="320" rx="9" fill="#cdb88f"/><path d="M15 35H63 M15 255H63 M105 80H138 M180 20H242" stroke="#f5efe5" stroke-width="4"/><text x="220" y="230" fill="#655747" font-family="serif" font-size="24" transform="rotate(-90 220 230)">one more chapter</text></g>
+<path d="M1420 700 Q1560 610 1700 700 L1670 810 Q1550 735 1430 810Z" fill="#fffaf2" stroke="#cdb88f" stroke-width="4"/><path d="M1560 660V765" stroke="#cdb88f" stroke-width="3"/>
+<text x="245" y="490" fill="#382e29" font-family="Georgia,serif" font-size="116">Bookish</text>
+<text x="252" y="550" fill="#74685e" font-family="sans-serif" font-size="22" letter-spacing="5">A LITTLE HOME FOR BIG STORIES</text>
+<text x="252" y="625" fill="#829b80" font-family="serif" font-size="25">for Niki · read, dream, write</text>
+</svg>

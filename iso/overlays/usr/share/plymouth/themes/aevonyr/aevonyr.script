@@ -1,13 +1,13 @@
-# Aevonyr Eclipse: animated boot and shutdown in Plymouth script language.
+# Bookish Paper: animated boot and shutdown in Plymouth script language.
 Window.SetBackgroundTopColor(0.035, 0.018, 0.075);
 Window.SetBackgroundBottomColor(0.09, 0.035, 0.18);
 w = Window.GetWidth(0);
 h = Window.GetHeight(0);
 cx = Window.GetX() + w/2;
 cy = Window.GetY() + h/2;
-logo = Image.Text("AEVONYR", 0.97, 0.81, 1.0);
+logo = Image.Text("BOOKISH", 0.97, 0.81, 1.0);
 logo = logo.Scale(logo.GetWidth()*3,logo.GetHeight()*3);
-glow = Image.Text("AEVONYR", 0.60, 0.28, 0.95);
+glow = Image.Text("BOOKISH", 0.60, 0.28, 0.95);
 glow = glow.Scale(glow.GetWidth()*3,glow.GetHeight()*3);
 glow_sprite = Sprite(glow);
 glow_sprite.SetPosition(cx-glow.GetWidth()/2+4,cy-70,1);

@@ -12,23 +12,23 @@ from .compat import CompatibilityError
 
 def open_package(filename):
     root = tk.Tk()
-    root.title('Aevonyr · Applications')
+    root.title('Bookish · Applications')
     root.geometry('560x330')
-    root.configure(bg='#101319')
+    root.configure(bg='#f5efe5')
     path = Path(filename).expanduser().resolve()
     events = queue.Queue()
-    label = tk.Label(root, text=path.name, bg='#101319', fg='#edf1ed',
+    label = tk.Label(root, text=path.name, bg='#f5efe5', fg='#382e29',
                      font=('DejaVu Sans', 16, 'bold'), wraplength=510)
     label.pack(padx=24, pady=(24, 12))
-    status = tk.Label(root, bg='#101319', fg='#a4afa9', wraplength=510, justify='left')
+    status = tk.Label(root, bg='#f5efe5', fg='#74685e', wraplength=510, justify='left')
     status.pack(padx=24, fill='x')
     progress = ttk.Progressbar(root, mode='indeterminate')
-    actions = tk.Frame(root, bg='#101319')
+    actions = tk.Frame(root, bg='#f5efe5')
     actions.pack(side='bottom', pady=20)
 
     def button(text, command):
-        return tk.Button(actions, text=text, command=command, bg='#c4ef9c',
-                         fg='#101319', relief='flat', padx=16, pady=10)
+        return tk.Button(actions, text=text, command=command, bg='#b9c6a4',
+                         fg='#f5efe5', relief='flat', padx=16, pady=10)
 
     def work():
         try:
@@ -64,7 +64,7 @@ def open_package(filename):
 
     def setup():
         try:
-            subprocess.Popen(['konsole', '-e', '/usr/local/bin/aevonyr-android-setup'], start_new_session=True)
+            subprocess.Popen(['konsole', '--hold', '-e', '/usr/local/bin/aevonyr-android-setup'], start_new_session=True)
         except OSError as exc:
             status.config(text=str(exc))
 
@@ -99,7 +99,9 @@ def open_package(filename):
             else:
                 status.config(text=value)
                 if path.suffix.lower() == '.apk':
-                    button('Set up Android', setup).pack(side='left', padx=6)
+                    button('Retry', begin).pack(side='left', padx=6)
+                    if 'setup' in value.lower() or 'set up android' in value.lower():
+                        button('Set up Android', setup).pack(side='left', padx=6)
             button('Close', root.destroy).pack(side='left', padx=6)
         root.after(100, poll)
 

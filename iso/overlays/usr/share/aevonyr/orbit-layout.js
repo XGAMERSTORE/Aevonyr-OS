@@ -1,4 +1,4 @@
-// Aevonyr Orbit layout. Run through the guarded per-user installer.
+// Bookish Applications layout. Run through the guarded per-user installer.
 (function () {
     var old = panels();
     // Idempotent after interrupted invocations: never create duplicate panels.
@@ -19,7 +19,7 @@
         orbit.writeConfig("url", "file:///usr/share/applications/aevonyr-launcher.desktop");
         var tasks = rail.addWidget("org.kde.plasma.icontasks");
         tasks.currentConfigGroup = ["General"];
-        tasks.writeConfig("launchers", ["applications:org.kde.dolphin.desktop", "applications:firefox-esr.desktop", "applications:aevonyr-os.desktop"]);
+        tasks.writeConfig("launchers", ["applications:bookish-library.desktop", "applications:org.kde.dolphin.desktop", "applications:firefox-esr.desktop", "applications:aevonyr-os.desktop"]);
         rail.addWidget("org.kde.plasma.pager");
         rail.addWidget("org.kde.plasma.showdesktop");
         status = new Panel;

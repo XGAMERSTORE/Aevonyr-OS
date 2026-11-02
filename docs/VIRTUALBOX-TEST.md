@@ -1,6 +1,6 @@
-# Aevonyr OS 1.0 — safe VirtualBox testing
+# Bookish OS 1.0 — safe VirtualBox testing
 
-Download Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso from a successful GitHub Actions artifact; extract it from ZIP and compare with SHA256SUMS.
+Download Bookish-OS-1.0.0-Live-amd64.iso from a successful GitHub Actions artifact; extract it from ZIP and compare with SHA256SUMS.
 
 Create an empty VirtualBox 7.x VM: Debian 64-bit, EFI enabled, Secure Boot off, VMSVGA, 128 MB video RAM, 4–6 GB RAM, 2 or more CPUs, at least 40 GB of NEW VIRTUAL disk, NAT network.
 

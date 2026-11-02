@@ -1,4 +1,4 @@
-# Windows and Android in Aevonyr OS
+# Windows and Android in Bookish OS
 
 ## Windows executables
 Wine translates Windows API calls to Linux-compatible calls. Aevonyr detects the installed wine executable and uses it to open supported EXE and MSI files. It does not reimplement the Windows API or claim ownership of Wine. Running arbitrary installers is a security risk, so user confirmation is required in the GUI.

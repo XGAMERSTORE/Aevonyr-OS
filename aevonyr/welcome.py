@@ -1,4 +1,4 @@
-"""Aevonyr first-run wizard. No telemetry, no network credentials collected.
+"""Bookish first-run wizard. No telemetry, no network credentials collected.
 
 This is a Tk window shown on first KDE login. It does not change Linux user
 passwords, repartition disks, install packages or enable cloud services.
@@ -17,7 +17,7 @@ MUTED = "#c6b4d8"
 
 STEPS = (
     ("welcome", "Welcome to Aevonyr", "Vítej v Aevonyr",
-     "One System. Two Worlds. Choose how you want to start.",
+     "A little home for big stories. Choose how you want to start.",
      "Jeden systém. Dva světy. Nastav si prostředí podle sebe."),
     ("network", "Connect to the internet", "Připoj se k internetu",
      "Use the real Linux network manager. No passwords are stored here.",
@@ -31,9 +31,9 @@ STEPS = (
     ("backup", "Protect your files", "Chraň své soubory",
      "Use Back In Time for personal documents and photos. Configure an external backup destination.",
      "Zálohuj dokumenty a fotografie pomocí Back In Time. Vyber externí úložiště."),
-    ("finish", "Ready for Aevonyr", "Aevonyr je připravený",
-     "The wizard can always be opened again from Aevonyr OS.",
-     "Průvodce lze kdykoliv znovu otevřít z Aevonyr OS."),
+    ("finish", "Ready for Aevonyr", "Bookish je připravený",
+     "The wizard can always be opened again from Bookish OS.",
+     "Průvodce lze kdykoliv znovu otevřít z Bookish OS."),
 )
 
 ACTIONS = {
@@ -49,7 +49,7 @@ class WelcomeWizard(tk.Toplevel):
         super().__init__(parent)
         self.parent_app = parent
         self.step = 0
-        self.title("Aevonyr OS — Welcome")
+        self.title("Bookish OS — Welcome")
         self.configure(bg=BG)
         self.geometry("790x580")
         self.minsize(680, 510)
@@ -109,8 +109,8 @@ class WelcomeWizard(tk.Toplevel):
             }
             self.button(self, names[key], lambda: self._launch(key), True).pack(pady=(0, 6))
         else:
-            self.label(self, self.msg("Your Aevonyr system awaits.",
-                                     "Tvůj Aevonyr systém čeká."), 13, ACCENT).pack()
+            self.label(self, self.msg("Your Bookish system awaits.",
+                                     "Tvůj Bookish systém čeká."), 13, ACCENT).pack()
 
         self.bottom = tk.Frame(self, bg=BG)
         self.bottom.pack(side="bottom", pady=24)
@@ -155,7 +155,7 @@ class WelcomeWizard(tk.Toplevel):
         try:
             save_preferences(self.parent_app.preferences)
         except OSError as exc:
-            messagebox.showerror("Aevonyr OS", str(exc), parent=self)
+            messagebox.showerror("Bookish OS", str(exc), parent=self)
             return
         self.parent_app.show(self.parent_app.current_page)
         self._render()
@@ -164,14 +164,14 @@ class WelcomeWizard(tk.Toplevel):
         try:
             self.parent_app._open_network()
         except Exception as exc:
-            messagebox.showerror("Aevonyr OS", str(exc), parent=self)
+            messagebox.showerror("Bookish OS", str(exc), parent=self)
 
     def _launch(self, kind):
         item = "updates" if kind == "apps" else kind
         try:
             start_tool(item)
         except (IntegrationError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc), parent=self)
+            messagebox.showerror("Bookish OS", str(exc), parent=self)
 
     def _navigate(self, delta):
         self.step = max(0, min(len(STEPS)-1, self.step + delta))
@@ -184,7 +184,7 @@ class WelcomeWizard(tk.Toplevel):
         try:
             mark_completed()
         except OSError as exc:
-            messagebox.showerror("Aevonyr OS",
+            messagebox.showerror("Bookish OS",
                                  self.msg("Could not save completion: ",
                                           "Nelze uložit dokončení: ") + str(exc),
                                  parent=self)

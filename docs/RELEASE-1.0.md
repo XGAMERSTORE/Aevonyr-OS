@@ -1,4 +1,4 @@
-# Aevonyr OS 1.0 Eclipse Edition — Release Candidate
+# Bookish OS 1.0 — Release Candidate
 
 One System. Two Worlds.
 
@@ -13,7 +13,7 @@ One System. Two Worlds.
 - Added explicit checks for BIOS/UEFI El Torito, squashfs and ISO checksum; optional QEMU screenshots help debugging.
 
 ## Image
-The target image is Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso. The matching GitHub Actions artifact is aevonyr-os-1.0.0-eclipse-live-amd64.
+The target image is Bookish-OS-1.0.0-Live-amd64.iso. The matching GitHub Actions artifact is bookish-os-1.0.0-live-amd64.
 
 Download from https://github.com/XGAMERSTORE/Aevonyr-OS/actions/workflows/build-linux-iso.yml by choosing a successful run, and extract the ZIP. Verify the included SHA256SUMS.
 

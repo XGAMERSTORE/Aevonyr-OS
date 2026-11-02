@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Wallpaper Setup
+Name=Bookish Wallpaper Setup
 Exec=/usr/local/bin/aevonyr-wallpaper-init
 Terminal=false
 OnlyShowIn=KDE;

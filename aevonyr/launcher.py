@@ -1,4 +1,4 @@
-"""Aevonyr Orbit: keyboard-accessible application overview, hosted by KDE."""
+"""Bookish Applications: keyboard-accessible application overview, hosted by KDE."""
 from datetime import datetime
 import queue
 import threading
@@ -8,11 +8,11 @@ import shutil
 import subprocess
 from .apphub import installed_apps, launch_command, start, AppHubError
 
-BG = '#101319'
-PANEL = '#1b2029'
-INK = '#edf1ed'
-MUTED = '#a4afa9'
-ACCENT = '#c4ef9c'
+BG = '#f5efe5'
+PANEL = '#e8dfd2'
+INK = '#382e29'
+MUTED = '#74685e'
+ACCENT = '#b9c6a4'
 
 
 from .orbit_search import matching_apps
@@ -20,7 +20,7 @@ from .orbit_search import matching_apps
 class AevonyrLauncher(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title('Aevonyr Orbit')
+        self.title('Bookish Applications')
         self.configure(bg=BG)
         width = min(760, self.winfo_screenwidth() - 48)
         height = min(660, self.winfo_screenheight() - 80)
@@ -54,7 +54,7 @@ class AevonyrLauncher(tk.Tk):
         main.pack(fill='both', expand=True, padx=24, pady=20)
         top = tk.Frame(main, bg=BG)
         top.pack(fill='x', pady=(0, 20))
-        tk.Label(top, text='◒  Orbit', bg=BG, fg=INK,
+        tk.Label(top, text='Bookish', bg=BG, fg=INK,
                  font=('DejaVu Sans', 22, 'bold')).pack(side='left')
         self.clock = tk.Label(top, bg=BG, fg=MUTED, font=('DejaVu Sans', 10))
         self.clock.pack(side='right')
@@ -72,8 +72,8 @@ class AevonyrLauncher(tk.Tk):
         actions = tk.Frame(main, bg=BG)
         actions.pack(fill='x')
         for index, (title, command) in enumerate([
-            ('▣  Files', ['dolphin']), ('◎  Web', ['firefox-esr']),
-            ('◴  Pulse', ['aevonyr', '--pulse']), ('⊞  Apps', ['aevonyr', '--app-hub'])]):
+            ('Books', ['aevonyr', '--books']), ('◎  Web', ['firefox-esr']),
+            ('Write', ['libreoffice', '--writer']), ('⊞  Apps', ['aevonyr', '--app-hub'])]):
             actions.columnconfigure(index, weight=1, uniform='quick')
             self._button(actions, title, lambda c=command: self.open_command(c),
                          index == 0).grid(row=0, column=index, sticky='ew', padx=(0, 6))
@@ -161,19 +161,19 @@ class AevonyrLauncher(tk.Tk):
         try:
             start(launch_command(self.visible_apps[selected[0]]))
         except (AppHubError, OSError) as exc:
-            messagebox.showerror('Aevonyr Orbit', str(exc))
+            messagebox.showerror('Bookish Applications', str(exc))
             return
         self.destroy()
 
     def open_command(self, command):
         binary = shutil.which(command[0])
         if not binary:
-            messagebox.showerror('Aevonyr Orbit', f'{command[0]} is not installed.')
+            messagebox.showerror('Bookish Applications', f'{command[0]} is not installed.')
             return
         try:
             subprocess.Popen([binary, *command[1:]], start_new_session=True)
         except OSError as exc:
-            messagebox.showerror('Aevonyr Orbit', str(exc))
+            messagebox.showerror('Bookish Applications', str(exc))
             return
         self.destroy()
 
@@ -182,8 +182,8 @@ class AevonyrLauncher(tk.Tk):
 
     def show_about(self):
         messagebox.showinfo('About Aevonyr',
-            'Aevonyr Orbit — experimental desktop experience\n\n'
-            'Aevonyr design and integration on Debian GNU/Linux.\n'
+            'Bookish Applications — experimental desktop experience\n\n'
+            'Bookish design and integration on Debian GNU/Linux.\n'
             'KDE Plasma and KWin provide the desktop and window management.\n'
             'Third-party components retain their names and licenses.\n'
             'Package copyright notices: /usr/share/doc/<package>/copyright')

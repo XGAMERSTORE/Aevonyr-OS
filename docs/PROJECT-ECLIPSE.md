@@ -1,4 +1,4 @@
-# Aevonyr OS 0.9 — Project Eclipse
+# Bookish OS 0.9 — Project Eclipse
 
 Project Eclipse prioritizes useful everyday features, not decorative mock buttons. It is an experimental release candidate built on Debian 13 and KDE Plasma.
 

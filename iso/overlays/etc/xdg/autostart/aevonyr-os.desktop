@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Orbit setup
-Comment=Apply the Aevonyr layout once for new accounts
+Name=Bookish Applications setup
+Comment=Apply the Bookish layout once for new accounts
 Exec=/usr/local/bin/aevonyr-orbit-layout --auto
 Icon=aevonyr-orbit
 Terminal=false

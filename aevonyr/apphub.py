@@ -1,4 +1,4 @@
-"""Aevonyr Universal App Hub: native apps, Flatpak, and Waydroid.
+"""Bookish Universal App Hub: native apps, Flatpak, and Waydroid.
 
 Only approved executable + argument arrays are launched. Desktop entries are
 handed to GIO rather than interpreting their untrusted Exec lines ourselves.

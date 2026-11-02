@@ -1,6 +1,6 @@
-# Aevonyr OS Architecture
+# Bookish OS Architecture
 
-Brand: Aevonyr OS — One System. Two Worlds.
+Brand: Bookish OS — One System. Two Worlds.
 Current stage: Python/Tk desktop shell on existing Linux, not yet bootable ISO.
 
 Target layers:

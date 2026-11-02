@@ -1,4 +1,4 @@
-# Aevonyr Orbit — experimental desktop redesign
+# Bookish Applications — experimental desktop redesign
 
 Orbit introduces an asymmetric application overview with ranked, multiword search,
 keyboard selection, launch actions, original vector artwork and a graphite/lime palette.

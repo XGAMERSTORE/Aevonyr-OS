@@ -1,4 +1,4 @@
-"""Aevonyr Pulse: local Linux resource telemetry (read-only).
+"""Bookish Pulse: local Linux resource telemetry (read-only).
 
 /proc/stat CPU counters contain cumulative jiffies; utilization needs two
 samples. /proc/meminfo MemAvailable, not MemFree, is used for meaningful

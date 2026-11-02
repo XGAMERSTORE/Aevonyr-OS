@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Orbit
+Name=Bookish Applications
 Comment=Search applications and open your workspace
 Exec=/usr/local/bin/aevonyr --launcher
 Icon=aevonyr-orbit

@@ -24,14 +24,14 @@ from .onboarding import completed
 from .integrations import IntegrationError, available_tools, paired_device_count
 from .integrations import start_tool as start_integration
 
-BG = "#101319"
+BG = "#f5efe5"
 SIDE = "#151920"
-PANEL = "#1b2029"
+PANEL = "#e8dfd2"
 PANEL2 = "#29342c"
-ACCENT = "#c4ef9c"
-INK = "#edf1ed"
-MUTED = "#a4afa9"
-PINK = "#c4ef9c"
+ACCENT = "#b9c6a4"
+INK = "#382e29"
+MUTED = "#74685e"
+PINK = "#b9c6a4"
 
 class AevonyrDesktop(tk.Tk):
     def __init__(self):
@@ -40,7 +40,7 @@ class AevonyrDesktop(tk.Tk):
         self.language = self.preferences["language"]
         self.current_page = "home"
         self.current_dir = Path.home()
-        self.title("Aevonyr OS 1.0 — Eclipse Edition")
+        self.title("Bookish OS 1.0")
         self.geometry("1140x730")
         self.minsize(780, 520)
         self.configure(bg=BG)
@@ -171,7 +171,7 @@ class AevonyrDesktop(tk.Tk):
                 anchor="w", pady=(18, 0))
 
     def pulse_page(self):
-        # Aevonyr Pulse updates are read-only and stop when the page is removed.
+        # Bookish Pulse updates are read-only and stop when the page is removed.
         from .pulse_ui import PulsePanel
         PulsePanel(self.body, self.t).pack(fill="both", expand=True)
 
@@ -195,7 +195,7 @@ class AevonyrDesktop(tk.Tk):
         try:
             start_integration(key)
         except (IntegrationError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def updates_page(self):
         self._label(self.body, self.t("updates_desc"), 12, MUTED).pack(anchor="w", pady=(0, 20))
@@ -268,7 +268,7 @@ class AevonyrDesktop(tk.Tk):
         try:
             open_network_settings()
         except (RuntimeError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def system_page(self):
         self._label(self.body, self.t("system_desc"), 12, MUTED).pack(anchor="w", pady=(0, 16))
@@ -284,16 +284,16 @@ class AevonyrDesktop(tk.Tk):
         self.clipboard_clear()
         self.clipboard_append(report)
         self.update()
-        messagebox.showinfo("Aevonyr OS", self.t("report_copied"))
+        messagebox.showinfo("Bookish OS", self.t("report_copied"))
 
     def _session_action(self, action):
         if action != "lock" and not messagebox.askyesno(
-                "Aevonyr OS", self.t("confirm_action") + " " + self.t("action_" + action) + "?"):
+                "Bookish OS", self.t("confirm_action") + " " + self.t("action_" + action) + "?"):
             return
         try:
             execute_action(action)
         except (SessionError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def apps_page(self):
         self._label(self.body, self.t("app_hub_desc"), 10, MUTED).pack(anchor="w", pady=(0, 12))
@@ -376,7 +376,7 @@ class AevonyrDesktop(tk.Tk):
         self._all_apps = apps
         self._filter_installed_apps()
         if error:
-            messagebox.showwarning("Aevonyr App Hub", error)
+            messagebox.showwarning("Bookish App Hub", error)
 
     def _filter_installed_apps(self):
         if not hasattr(self, "app_listbox") or self.current_page != "apps":
@@ -398,39 +398,39 @@ class AevonyrDesktop(tk.Tk):
         try:
             start(launch_command(app))
         except (AppHubError, OSError) as exc:
-            messagebox.showerror("Aevonyr App Hub", str(exc))
+            messagebox.showerror("Bookish App Hub", str(exc))
 
     def _install_featured(self):
         selected = self.featured_listbox.curselection()
         if not selected:
             return
         app = self._featured[selected[0]]
-        if not messagebox.askyesno("Aevonyr App Hub",
+        if not messagebox.askyesno("Bookish App Hub",
             f"{self.t('install_flatpak')}\n\n{app.name}\n{app.identifier}\n\n"
             + self.t("install_review")):
             return
         try:
             start(install_flatpak_command(app.identifier))
         except (AppHubError, OSError) as exc:
-            messagebox.showerror("Aevonyr App Hub", str(exc))
+            messagebox.showerror("Bookish App Hub", str(exc))
 
     def _enable_flathub(self):
-        if not messagebox.askyesno("Aevonyr App Hub", self.t("flathub_permission")):
+        if not messagebox.askyesno("Bookish App Hub", self.t("flathub_permission")):
             return
         try:
             start(enable_flathub_command())
         except (AppHubError, OSError) as exc:
-            messagebox.showerror("Aevonyr App Hub", str(exc))
+            messagebox.showerror("Bookish App Hub", str(exc))
 
     def _open_discover(self):
         binary = shutil.which("plasma-discover")
         if not binary:
-            messagebox.showerror("Aevonyr App Hub", self.t("discover_missing"))
+            messagebox.showerror("Bookish App Hub", self.t("discover_missing"))
             return
         try:
             subprocess.Popen([binary], start_new_session=True)
         except OSError as exc:
-            messagebox.showerror("Aevonyr App Hub", str(exc))
+            messagebox.showerror("Bookish App Hub", str(exc))
 
     def restore_page(self):
         self._label(self.body, self.t("restore_desc"), 12, MUTED).pack(anchor="w", pady=(0, 18))
@@ -451,21 +451,21 @@ class AevonyrDesktop(tk.Tk):
             anchor="w", pady=(28, 0))
 
     def _open_timeshift(self):
-        if not messagebox.askyesno("Aevonyr OS", self.t("snapshot_warning")):
+        if not messagebox.askyesno("Bookish OS", self.t("snapshot_warning")):
             return
         try:
             start_tool(restore_command())
         except (RestoreError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def _open_backintime(self):
         if is_live_boot() and not messagebox.askyesno(
-                "Aevonyr OS", self.t("live_backup_warning")):
+                "Bookish OS", self.t("live_backup_warning")):
             return
         try:
             start_tool(backup_command())
         except (RestoreError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def pick_windows(self):
         name = filedialog.askopenfilename(title=self.t("choose_exe"),
@@ -483,18 +483,18 @@ class AevonyrDesktop(tk.Tk):
         try:
             plan = make_plan(path)
             prompt = self.t("confirm_install") if plan.kind == "apk-install" else self.t("confirm_run")
-            if not messagebox.askyesno("Aevonyr OS", f"{prompt}\n\n{path.name}"):
+            if not messagebox.askyesno("Bookish OS", f"{prompt}\n\n{path.name}"):
                 return
             execute_plan(plan)
-            messagebox.showinfo("Aevonyr OS", self.t("started"))
+            messagebox.showinfo("Bookish OS", self.t("started"))
         except (CompatibilityError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def _open_android(self):
         try:
             open_android()
         except (CompatibilityError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def files_page(self):
         toolbar = tk.Frame(self.body, bg=BG)
@@ -545,12 +545,12 @@ class AevonyrDesktop(tk.Tk):
         else:
             program = shutil.which("xdg-open")
             if not program:
-                messagebox.showerror("Aevonyr OS", "xdg-open is not installed.")
+                messagebox.showerror("Bookish OS", "xdg-open is not installed.")
                 return
             try:
                 subprocess.Popen([program, str(target)], start_new_session=True)
             except OSError as exc:
-                messagebox.showerror("Aevonyr OS", str(exc))
+                messagebox.showerror("Bookish OS", str(exc))
 
     def notes_page(self):
         self._label(self.body, self.t("notes_desc"), 11, MUTED).pack(anchor="w", pady=(0, 12))
@@ -569,9 +569,9 @@ class AevonyrDesktop(tk.Tk):
             destination = notes_path()
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(self.note_editor.get("1.0", "end-1c"), encoding="utf-8")
-            messagebox.showinfo("Aevonyr OS", self.t("saved"))
+            messagebox.showinfo("Bookish OS", self.t("saved"))
         except OSError as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def settings_page(self):
         self._label(self.body, self.t("language"), 17, INK, True).pack(anchor="w", pady=(0, 14))
@@ -603,9 +603,9 @@ class AevonyrDesktop(tk.Tk):
             self.preferences["language"] = code
             save_preferences(self.preferences)
             self.show("settings")
-            messagebox.showinfo("Aevonyr OS", self.t("language_installed"))
+            messagebox.showinfo("Bookish OS", self.t("language_installed"))
         except (ValueError, OSError, UnicodeError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def _select_language(self, _event):
         for code, name in LANGUAGES.items():
@@ -615,12 +615,12 @@ class AevonyrDesktop(tk.Tk):
                 try:
                     save_preferences(self.preferences)
                 except OSError as exc:
-                    messagebox.showerror("Aevonyr OS", str(exc))
+                    messagebox.showerror("Bookish OS", str(exc))
                 self.show("settings")
                 break
 
     def about_page(self):
-        self._label(self.body, "Aevonyr OS 1.0 Linux Live — Eclipse Edition", 22, INK, True).pack(anchor="w", pady=(0, 14))
+        self._label(self.body, "Bookish OS 1.0 Linux Live ", 22, INK, True).pack(anchor="w", pady=(0, 14))
         self._label(self.body, self.t("about_desc"), 12, MUTED).pack(anchor="w", pady=(0, 14))
         self._label(self.body, f"Python {platform.python_version()}  •  {platform.system()}",
                     11, MUTED).pack(anchor="w")

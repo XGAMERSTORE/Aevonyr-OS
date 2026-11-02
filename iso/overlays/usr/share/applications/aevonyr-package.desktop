@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Application Installer
-Name[cs]=Instalace aplikací Aevonyr
+Name=Bookish Application Installer
+Name[cs]=Instalace aplikací Bookish
 Exec=/usr/local/bin/aevonyr --open %f
 Icon=system-software-install
 Terminal=false

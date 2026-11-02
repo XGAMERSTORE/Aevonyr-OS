@@ -1,4 +1,4 @@
-"""First-run state for Aevonyr OS.
+"""First-run state for Bookish OS.
 
 No account details, passwords, device IDs or network credentials are stored.
 Completion is an explicit user action. An interrupted wizard returns next login.

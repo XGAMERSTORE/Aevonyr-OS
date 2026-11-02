@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Updates
+Name=Bookish Updates
 Comment=Open software and firmware update center
 Exec=/usr/local/bin/aevonyr --updates
 Icon=system-software-update

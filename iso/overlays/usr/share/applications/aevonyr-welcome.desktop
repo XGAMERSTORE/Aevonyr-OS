@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Welcome
+Name=Bookish Welcome
 Comment=Choose your language, connectivity, apps and backups
 Exec=/usr/local/bin/aevonyr --welcome
 Icon=preferences-system

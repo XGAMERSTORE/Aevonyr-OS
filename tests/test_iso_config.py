@@ -44,11 +44,11 @@ class LiveBuildConfigTests(unittest.TestCase):
                           ('aevonyr-restore.desktop', '--restore')):
             self.assertIn('Exec=/usr/local/bin/aevonyr ' + cli,
                           (root/'usr/share/applications'/name).read_text())
-        self.assertIn('Name=Aevonyr Eclipse',
+        self.assertIn('Name=Bookish Paper',
                       (root/'usr/share/color-schemes/AevonyrEclipse.colors').read_text())
         self.assertIn('plasma-apply-colorscheme AevonyrEclipse',
                       (root/'usr/local/bin/aevonyr-colorscheme-init').read_text())
-        self.assertIn('Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso', (ROOT/'iso/build.sh').read_text())
+        self.assertIn('Bookish-OS-1.0.0-Live-amd64.iso', (ROOT/'iso/build.sh').read_text())
 
     def test_first_run_updates_phone_launchers(self):
         applications = ROOT/'iso/overlays/usr/share/applications'
@@ -75,7 +75,7 @@ class LiveBuildConfigTests(unittest.TestCase):
 
     def test_release_iso_and_verifier(self):
         config=(ROOT/'.github/workflows/build-linux-iso.yml').read_text()
-        self.assertIn('Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso',config)
+        self.assertIn('Bookish-OS-1.0.0-Live-amd64.iso',config)
         self.assertIn('xorriso -indev "$iso" -ls /live',config)
         self.assertIn('El Torito boot img.*BIOS',config)
         self.assertIn('El Torito boot img.*UEFI',config)

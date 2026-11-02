@@ -2,7 +2,7 @@
 
 Timeshift restores system files (not personal documents), and requires a
 configured installed system. Back In Time is the personal-data backup tool.
-Aevonyr never automatically snapshots/restores partitions or selects disks.
+Bookish never automatically snapshots/restores partitions or selects disks.
 """
 from pathlib import Path
 import shutil
@@ -23,7 +23,7 @@ def is_live_boot(path=Path("/proc/cmdline")):
 def restore_command(which=shutil.which, is_live=None):
     live = is_live_boot() if is_live is None else is_live
     if live:
-        raise RestoreError("System snapshots are unavailable in Live mode. Install Aevonyr first.")
+        raise RestoreError("System snapshots are unavailable in Live mode. Install Bookish first.")
     tool = which("timeshift-launcher")
     if not tool:
         raise RestoreError("Timeshift is not installed.")
