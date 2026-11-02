@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
-from aevonyr.books import Library
+from aevonyr.book_library import Library
 from aevonyr.book_translation import chunks, api
 
 class BookTests(unittest.TestCase):

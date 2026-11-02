@@ -4,8 +4,6 @@ import queue
 import threading
 import urllib.request
 import urllib.parse
-import tkinter as tk
-from tkinter import filedialog, messagebox
 from pathlib import Path
 
 
@@ -30,6 +28,8 @@ def chunks(text, limit=2000):
 
 
 def translation_window(parent):
+    import tkinter as tk
+    from tkinter import filedialog, messagebox
     win=tk.Toplevel(parent);win.title('Bookish · Překlad textu');win.geometry('620x540');win.configure(bg='#f5efe5')
     def label(text):tk.Label(win,text=text,bg='#f5efe5',fg='#382e29',wraplength=560,justify='left').pack(anchor='w',padx=24,pady=6)
     label('Překlad knihy / textu · LibreTranslate')
