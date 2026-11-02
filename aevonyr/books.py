@@ -51,6 +51,14 @@ class BookishLibrary(tk.Tk):
         if self.current:
             try:self.library.save(self.current,self.progress.get(),self.notes.get('1.0','end-1c'))
             except (ValueError,sqlite3.Error) as exc:messagebox.showerror('Bookish',str(exc));return False
+            selected=self.list.curselection()
+            for index,row in enumerate(self.rows):
+                if row[0]==self.current:
+                    row=(row[0],row[1],int(self.progress.get()),self.notes.get('1.0','end-1c'))
+                    self.rows[index]=row
+                    self.list.delete(index);self.list.insert(index,f'{row[1]}   ·   {row[2]}%')
+                    break
+            if selected:self.list.selection_set(selected[0])
             self.status.config(text='Záložka a poznámky uloženy v tomto uživatelském účtu.')
         return True
 
@@ -58,6 +66,7 @@ class BookishLibrary(tk.Tk):
         selection=self.list.curselection()
         if not selection:return
         row=self.rows[selection[0]]
+        if row[0]==self.current:return
         if not self.save():return
         row=next(item for item in self.library.all() if item[0]==row[0])
         self.current=row[0];self.title_label.config(text=row[1]);self.progress.set(str(row[2]));self.notes.delete('1.0','end');self.notes.insert('1.0',row[3])

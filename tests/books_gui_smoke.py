@@ -15,5 +15,5 @@ with tempfile.TemporaryDirectory() as data:
     root.update()
     assert root.library.all()[0][2]==24
     Path('dist').mkdir(exist_ok=True)
-    ImageGrab.grab().save('dist/bookish-library.png')
+    ImageGrab.grab(bbox=(root.winfo_rootx(),root.winfo_rooty(),root.winfo_rootx()+root.winfo_width(),root.winfo_rooty()+root.winfo_height())).save('dist/bookish-library.png')
     root.close()
