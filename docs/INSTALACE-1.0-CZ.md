@@ -1,14 +1,14 @@
-# Aevonyr OS 1.0 Eclipse Edition — český návod 💜
+# Bookish OS 1.0 — český návod 💜
 
 **Jeden systém. Dva světy.**
 
-Aevonyr OS 1.0 je experimentální Linux založený na Debianu 13 a KDE Plasma. Obsahuje vlastní grafické prostředí Aevonyr uvnitř KDE, centrum aplikací, vlastní vzhled Eclipse, možnost použití Wine a Waydroidu a panel výkonu Aevonyr Pulse.
+Bookish OS 1.0 je experimentální Linux založený na Debianu 13 a KDE Plasma. Obsahuje vlastní grafické prostředí Aevonyr uvnitř KDE, centrum aplikací, vlastní vzhled Eclipse, možnost použití Wine a Waydroidu a panel výkonu Aevonyr Pulse.
 
 ## Stažení
 
 1. Otevři [sestavení Aevonyr 1.0 na GitHubu](https://github.com/XGAMERSTORE/Aevonyr-OS/actions/runs/40967194969).
-2. **Jen pokud je sestavení zelené**, dole v části **Artifacts** vyber **aevonyr-os-1.0.0-eclipse-live-amd64**.
-3. Stáhni ZIP a rozbal ISO: **Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso**.
+2. **Jen pokud je sestavení zelené**, dole v části **Artifacts** vyber **bookish-os-1.0.0-live-amd64**.
+3. Stáhni ZIP a rozbal ISO: **Bookish-OS-1.0.0-Live-amd64.iso**.
 4. Pomocí SHA256SUMS ověř, že stažený soubor není poškozený.
 
 Artefakty GitHub Actions mohou po uplynutí doby uchovávání zmizet, proto si ISO ulož.

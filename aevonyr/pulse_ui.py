@@ -1,4 +1,4 @@
-"""Animated Aevonyr Pulse dashboard, embedded in the KDE-hosted app."""
+"""Animated Bookish Pulse dashboard, embedded in the KDE-hosted app."""
 import shutil
 import subprocess
 import tkinter as tk
@@ -134,9 +134,9 @@ class PulsePanel(tk.Frame):
     def open_monitor(self):
         executable = shutil.which("plasma-systemmonitor")
         if not executable:
-            messagebox.showerror("Aevonyr Pulse", self.t("pulse_monitor_missing"))
+            messagebox.showerror("Bookish Pulse", self.t("pulse_monitor_missing"))
             return
         try:
             subprocess.Popen([executable], start_new_session=True)
         except OSError as exc:
-            messagebox.showerror("Aevonyr Pulse", str(exc))
+            messagebox.showerror("Bookish Pulse", str(exc))

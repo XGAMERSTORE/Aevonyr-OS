@@ -1,4 +1,4 @@
-# Localization in Aevonyr OS
+# Localization in Bookish OS
 
 English is the default UI language. The 10 built-in languages are at different translation stages. Missing keys fall back to English.
 

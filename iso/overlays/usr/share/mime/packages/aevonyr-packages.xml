@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+  <mime-type type="application/vnd.android.package-archive">
+    <comment>Android application package</comment>
+    <glob pattern="*.apk"/>
+  </mime-type>
+  <mime-type type="application/x-msi">
+    <comment>Windows Installer package</comment>
+    <glob pattern="*.msi"/>
+  </mime-type>
+</mime-info>

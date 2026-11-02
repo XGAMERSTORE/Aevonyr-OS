@@ -1,12 +1,14 @@
-name: Aevonyr GUI smoke (Xvfb)
+name: Bookish GUI smoke (Xvfb)
 on:
   workflow_dispatch:
   push:
     branches:
       - feature/aevonyr-1.0-gui-validation
+      - feature/aevonyr-orbit-desktop
     paths:
       - 'aevonyr/**'
-      - 'tests/gui_smoke.py'
+      - 'tests/**'
+      - 'iso/**'
       - '.github/workflows/gui-smoke.yml'
 permissions:
   contents: read
@@ -19,11 +21,26 @@ jobs:
       - name: Install headless X11 and Tk
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y --no-install-recommends python3-tk xvfb xauth
+          sudo apt-get install -y --no-install-recommends python3-tk python3-pil xvfb xauth
       - name: Python unit tests
         run: |
           python3 -m unittest discover -s tests -v
           python3 -m compileall -q aevonyr
-      - name: Open real Aevonyr GUI and exercise pages
+          node tests/orbit_layout.test.cjs
+      - name: Open real Bookish GUI and exercise pages
         run: |
           xvfb-run -a -s "-screen 0 1280x800x24" python3 tests/gui_smoke.py
+      - name: Orbit keyboard and search smoke with screenshots
+        run: |
+          xvfb-run -a -s "-screen 0 1440x900x24" python3 tests/orbit_gui_smoke.py
+      - name: Bookish library smoke and screenshot
+        run: xvfb-run -a -s "-screen 0 1100x800x24" python3 tests/books_gui_smoke.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: aevonyr-orbit-ui-preview
+          path: |
+            dist/orbit-*.png
+            dist/bookish-*.png
+          if-no-files-found: warn
+          retention-days: 14

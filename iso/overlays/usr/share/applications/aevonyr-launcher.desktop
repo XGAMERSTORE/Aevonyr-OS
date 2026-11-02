@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Launcher
-Comment=Search Linux, Flatpak and Android apps
+Name=Bookish Applications
+Comment=Search applications and open your workspace
 Exec=/usr/local/bin/aevonyr --launcher
-Icon=start-here-kde
+Icon=aevonyr-orbit
 Terminal=false
-Categories=System;Utility;
-StartupNotify=true
+Categories=Utility;
+Keywords=search;launcher;orbit;

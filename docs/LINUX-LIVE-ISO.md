@@ -1,4 +1,4 @@
-# Aevonyr OS Linux Live 0.7
+# Bookish OS Linux Live 0.7
 
 Unlike the 0.6 UEFI demo, this is a **Debian 13 based real Linux Live OS build recipe**.
 
@@ -44,7 +44,7 @@ No technology can guarantee compatibility with every Windows/Android application
 - New regression tests. A built ISO is **not yet proof of VirtualBox boot, SDDM theme operation or app compatibility**.
 
 ## Release candidate 0.7.2
-- Aevonyr Eclipse script animation during boot and shutdown (including a masked disk password prompt).
+- Bookish Paper script animation during boot and shutdown (including a masked disk password prompt).
 - Fixed missing custom chroot hook copy in live-build.
 - Aevonyr System Health pane and `aevonyr --diagnose` CLI (NetworkManager, Wine, Waydroid, available disk space, current kernel).
 - KDE/systemd lock, logout, restart and shutdown actions with UI confirmation before ending the session.
@@ -73,5 +73,5 @@ Actual boot, password prompt behavior, installer and EXE/APK functionality must 
 - Aevonyr Pulse genuine local CPU/memory/storage graph and Plasma System Monitor.
 - Fixed unsupported xorriso verification command. Verify El Torito BIOS and UEFI, list /live squashfs, and check SHA256.
 - Experimental QEMU graphical screenshot probes are non-blocking and need manual review.
-- Output: dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso.
+- Output: dist/Bookish-OS-1.0.0-Live-amd64.iso.
 - Full VirtualBox GUI boot and disk install verification is still required before stable release.

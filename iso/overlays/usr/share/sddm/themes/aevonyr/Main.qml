@@ -14,9 +14,9 @@ Item {
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: "#080715" }
-            GradientStop { position: 0.5; color: "#24123f" }
-            GradientStop { position: 1.0; color: "#070811" }
+            GradientStop { position: 0.0; color: "#f5efe5" }
+            GradientStop { position: 0.5; color: "#e8dfd2" }
+            GradientStop { position: 1.0; color: "#f5efe5" }
         }
     }
     Rectangle {
@@ -27,7 +27,7 @@ Item {
         anchors.centerIn: parent
         color: "transparent"
         border.width: 10
-        border.color: "#9a63ea"
+        border.color: "#829b80"
         opacity: 0.3
         SequentialAnimation on opacity {
             loops: Animation.Infinite
@@ -40,8 +40,8 @@ Item {
         height: width
         radius: width / 2
         anchors.centerIn: halo
-        color: "#171027"
-        border.color: "#603b98"
+        color: "#e8dfd2"
+        border.color: "#cdb88f"
         border.width: 2
     }
     ColumnLayout {
@@ -50,16 +50,16 @@ Item {
         spacing: 16
         Text {
             Layout.alignment: Qt.AlignHCenter
-            text: "AEVONYR"
-            color: "#fff4ff"
+            text: "BOOKISH"
+            color: "#382e29"
             font.pixelSize: 46
             font.bold: true
             font.letterSpacing: 7
         }
         Text {
             Layout.alignment: Qt.AlignHCenter
-            text: "ONE SYSTEM. TWO WORLDS."
-            color: "#c8a9ec"
+            text: "A LITTLE HOME FOR BIG STORIES"
+            color: "#74685e"
             font.pixelSize: 12
             font.letterSpacing: 3
         }
@@ -70,9 +70,9 @@ Item {
             Layout.preferredHeight: 50
             text: userModel.lastUser || ""
             placeholderText: "Username"
-            color: "#ffffff"
+            color: "#382e29"
             font.pixelSize: 16
-            background: Rectangle { color: "#e0221738"; radius: 11; border.color: "#9065be" }
+            background: Rectangle { color: "#fffaf2"; radius: 11; border.color: "#829b80" }
         }
         TextField {
             id: password
@@ -80,10 +80,10 @@ Item {
             Layout.preferredHeight: 50
             placeholderText: "Password"
             echoMode: TextInput.Password
-            color: "#ffffff"
+            color: "#382e29"
             font.pixelSize: 16
             onAccepted: root.signIn()
-            background: Rectangle { color: "#e0221738"; radius: 11; border.color: "#9065be" }
+            background: Rectangle { color: "#fffaf2"; radius: 11; border.color: "#829b80" }
         }
         ComboBox {
             id: sessionBox

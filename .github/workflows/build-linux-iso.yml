@@ -1,12 +1,14 @@
-name: Build Aevonyr Linux Live ISO
+name: Build Bookish Linux Live ISO
 on:
   workflow_dispatch:
   push:
     branches:
       - feature/linux-live-distro
+      - feature/aevonyr-orbit-desktop
     paths:
       - 'iso/**'
       - 'aevonyr/**'
+      - 'scripts/**'
       - '.github/workflows/build-linux-iso.yml'
 permissions:
   contents: read
@@ -44,7 +46,7 @@ jobs:
           '
       - name: Verify image
         run: |
-          test -s dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso
+          test -s dist/Bookish-OS-1.0.0-Live-amd64.iso
           (cd dist && sha256sum -c SHA256SUMS)
           file dist/*.iso
           # Check that both optical boot records and Linux live filesystem exist.
@@ -52,7 +54,7 @@ jobs:
             export DEBIAN_FRONTEND=noninteractive
             apt-get update -qq >/dev/null
             apt-get install -y -qq --no-install-recommends xorriso >/dev/null
-            iso="/dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso"
+            iso="/dist/Bookish-OS-1.0.0-Live-amd64.iso"
             xorriso -indev "$iso" -report_el_torito plain > /tmp/boot-report.txt
             cat /tmp/boot-report.txt
             grep -Eq "El Torito boot img.*BIOS" /tmp/boot-report.txt
@@ -65,7 +67,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: success()
         with:
-          name: aevonyr-os-1.0.0-eclipse-live-amd64
+          name: bookish-os-1.0.0-live-amd64
           path: |
             dist/*.iso
             dist/SHA256SUMS
@@ -77,7 +79,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf socat
-          bash scripts/qemu-screenshots.sh "dist/Aevonyr-OS-1.0.0-Eclipse-Live-amd64.iso" "dist/boot-screens"
+          bash scripts/qemu-screenshots.sh "dist/Bookish-OS-1.0.0-Live-amd64.iso" "dist/boot-screens"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

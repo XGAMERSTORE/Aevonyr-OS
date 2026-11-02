@@ -70,3 +70,18 @@ waydroid
 
 # Disk installation via Debian Calamares settings
 calamares-settings-debian
+
+# Plasma scripting transport for the Orbit layout
+qdbus-qt6
+
+# File-manager package opening and Android package metadata
+shared-mime-info
+desktop-file-utils
+aapt
+
+# Bookish reading and writing
+calibre
+libreoffice-writer
+focuswriter
+hunspell-cs
+hunspell-en-us

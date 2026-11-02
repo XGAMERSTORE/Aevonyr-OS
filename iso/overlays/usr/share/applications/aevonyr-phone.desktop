@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Phone Link
+Name=Bookish Phone Link
 Comment=Connect your phone through KDE Connect
 Exec=/usr/local/bin/aevonyr --phone
 Icon=phone

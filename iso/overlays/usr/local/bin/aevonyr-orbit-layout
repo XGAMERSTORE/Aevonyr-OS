@@ -1,0 +1,90 @@
+#!/usr/bin/python3
+"""Guarded Orbit layout setup; run as the logged-in desktop user, never root."""
+import argparse
+import fcntl
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+import time
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("mode", choices=["apply", "auto", "restore"], nargs="?")
+    parser.add_argument("--auto", action="store_true")
+    args = parser.parse_args()
+    mode = "auto" if args.auto else args.mode
+    if not mode:
+        parser.error("choose apply or restore")
+    if os.geteuid() == 0:
+        parser.exit(1, "Run in your desktop session without sudo.\n")
+    home = Path.home()
+    state = Path(os.environ.get("XDG_STATE_HOME", home / ".local/state")) / "aevonyr"
+    config = Path(os.environ.get("XDG_CONFIG_HOME", home / ".config"))
+    marker = state / "orbit-layout-v1"
+    fresh = config / "aevonyr/orbit-first-login"
+    rc = config / "plasma-org.kde.plasma.desktop-appletsrc"
+    backup = state / "pre-orbit-appletsrc"
+    if mode == "auto" and (marker.exists() or not fresh.exists()):
+        return 0
+    state.mkdir(parents=True, exist_ok=True)
+    with (state / "orbit-layout.lock").open("a") as lock:
+        try:
+            fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except BlockingIOError:
+            return 0
+        if mode == "restore":
+            if not backup.exists():
+                parser.exit(1, "No pre-Orbit layout backup exists.\n")
+            # Do not replace a config while the shell can overwrite it.
+            subprocess.run(["systemctl", "--user", "stop", "plasma-plasmashell.service"], check=True)
+            try:
+                shutil.copy2(backup, rc)
+                marker.unlink(missing_ok=True)
+                fresh.unlink(missing_ok=True)
+            finally:
+                subprocess.run(["systemctl", "--user", "start", "plasma-plasmashell.service"], check=True)
+            print("Previous panel layout restored.")
+            return 0
+        if marker.exists():
+            print("Orbit already applied; keeping your customizations.")
+            return 0
+        qdbus = (shutil.which("qdbus6") or shutil.which("qdbus-qt6")
+                 or shutil.which("qdbus") or shutil.which("/usr/lib/qt6/bin/qdbus"))
+        if not qdbus:
+            parser.exit(1, "qdbus6 is missing; the original layout is unchanged.\n")
+        # Wait for the shell AND its default panels before backing up/replacing them.
+        for attempt in range(20):
+            probe = subprocess.run([qdbus, "org.kde.plasmashell", "/PlasmaShell",
+                                    "org.kde.PlasmaShell.evaluateScript", "print(panels().length);"],
+                                   capture_output=True, text=True, timeout=10)
+            if probe.returncode == 0 and probe.stdout.strip().isdigit() and int(probe.stdout.strip()) > 0 and rc.exists():
+                break
+            time.sleep(1)
+        else:
+            parser.exit(1, "Plasma is not ready; the original layout is unchanged.\n")
+        if not backup.exists():
+            shutil.copy2(rc, backup)
+        script = Path("/usr/share/aevonyr/orbit-layout.js").read_text()
+        result = subprocess.run([qdbus, "org.kde.plasmashell", "/PlasmaShell",
+                                 "org.kde.PlasmaShell.evaluateScript", script],
+                                capture_output=True, text=True, timeout=30)
+        if result.returncode or not any(token in result.stdout for token in
+                                        ("AEVONYR_APPLIED", "AEVONYR_ALREADY_APPLIED")):
+            print(result.stderr or result.stdout, file=sys.stderr)
+            parser.exit(1, "Layout not confirmed. Use aevonyr-orbit-layout restore if needed.\n")
+        marker.write_text("v1\n")
+        fresh.unlink(missing_ok=True)
+        if mode == "auto":
+            subprocess.Popen(["aevonyr", "--launcher"], start_new_session=True)
+        print("Orbit applied. Backup: " + str(backup))
+        return 0
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (OSError, subprocess.SubprocessError) as exc:
+        print("Orbit setup failed: " + str(exc), file=sys.stderr)
+        raise SystemExit(1)

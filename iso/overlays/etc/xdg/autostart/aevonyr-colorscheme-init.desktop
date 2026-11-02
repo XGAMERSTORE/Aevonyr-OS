@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Colors
+Name=Bookish Colors
 Comment=Apply default colors once
 Exec=/usr/local/bin/aevonyr-colorscheme-init
 Icon=preferences-desktop-color

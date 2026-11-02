@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Bookish Library
+Name[cs]=Knihovna Bookish
+Comment=Your books, reading progress and notes
+Exec=aevonyr --books
+Icon=accessories-dictionary
+Terminal=false
+Categories=Office;Literature;

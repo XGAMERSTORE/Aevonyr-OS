@@ -1,9 +1,9 @@
 [Desktop Entry]
 Type=Application
-Name=Aevonyr Desktop
-Comment=Launch Aevonyr interface inside KDE
-Exec=/usr/local/bin/aevonyr
-Icon=computer
+Name=Bookish Applications setup
+Comment=Apply the Bookish layout once for new accounts
+Exec=/usr/local/bin/aevonyr-orbit-layout --auto
+Icon=aevonyr-orbit
 Terminal=false
 OnlyShowIn=KDE;
 X-GNOME-Autostart-enabled=true
