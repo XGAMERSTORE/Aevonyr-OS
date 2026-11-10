@@ -1,6 +1,14 @@
 name: Bookish OS x86_64 live ISO (experimental)
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/bookish-live-iso.yml'
+      - 'scripts/build-live-iso.sh'
+      - 'aevonyr/**'
+      - 'bookish/**'
+      - 'language-packs/**'
 permissions:
   contents: read
 jobs:
