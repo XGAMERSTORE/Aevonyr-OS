@@ -4,7 +4,7 @@ from .compat import backend_status, make_plan, execute_plan, CompatibilityError
 from .i18n import LANGUAGES, CATALOG, install_language_pack
 
 def main():
-    parser = argparse.ArgumentParser(description="Aevonyr OS desktop preview")
+    parser = argparse.ArgumentParser(description="Bookish OS desktop preview")
     parser.add_argument("--check", action="store_true", help="check runtime availability")
     parser.add_argument("--launch", metavar="FILE", help="launch EXE/MSI or install APK")
     parser.add_argument("--languages", action="store_true", help="list installed interface languages")
