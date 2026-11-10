@@ -1,4 +1,12 @@
-# Aevonyr OS
+# Bookish OS
+
+**One OS for desktops and tablets.** Bookish OS is the unified product identity for x86_64 computers and ARM64 tablets, including the planned Realme Pad RMP2102/RMP2103 ports.
+
+**Current reality:** the repository still contains an existing Linux-session Python/Tk shell prototype, **not** a complete bootable distribution. The Realme Pad variants are **hardware research only**; no tablet boot has been demonstrated.
+
+See [Unified Bookish OS architecture and migration plan](docs/BOOKISH_UNIFIED_OS.md).
+
+## Existing prototype (historically Aevonyr)
 
 **One System. Two Worlds.**
 
