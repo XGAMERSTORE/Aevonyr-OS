@@ -51,7 +51,6 @@ lb config --mode debian --distribution bookworm --architectures amd64 --binary-i
   --archive-areas "main" --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \
   --mirror-binary "https://deb.debian.org/debian/" \
-  --mirror-bootstrap-security "https://security.debian.org/debian-security/" \
   --mirror-chroot-security "https://security.debian.org/debian-security/" \
   --mirror-binary-security "https://security.debian.org/debian-security/"
 lb build
