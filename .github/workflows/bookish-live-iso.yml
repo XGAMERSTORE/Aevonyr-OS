@@ -1,0 +1,32 @@
+name: Bookish OS x86_64 live ISO (experimental)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build-live-iso:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install live-build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y live-build rsync
+      - name: Build experimental Bookish ISO
+        run: sudo bash scripts/build-live-iso.sh "$GITHUB_WORKSPACE/build/bookish-live"
+      - name: Verify ISO output and checksum
+        run: |
+          set -eu
+          cd build/bookish-live
+          test -n "$(find . -maxdepth 1 -type f -name '*.iso' -print -quit)"
+          sha256sum -c ./*.iso.sha256
+      - name: Upload experimental ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookish-os-x86_64-live-experimental
+          path: |
+            build/bookish-live/*.iso
+            build/bookish-live/*.iso.sha256
+          if-no-files-found: error
+          retention-days: 7
