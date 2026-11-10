@@ -50,7 +50,7 @@ X-GNOME-Autostart-enabled=true
 EOF
 cd "$OUT"
 lb config --mode debian --security false --firmware-chroot false --distribution bookworm --architectures amd64 --binary-images iso-hybrid \
-  --bootappend-live "boot=live components" --debian-installer none \
+  --bootappend-live "boot=live components" --debian-installer false \
   --archive-areas "main" --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \
   --mirror-binary "https://deb.debian.org/debian/"
