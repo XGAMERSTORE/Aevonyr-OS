@@ -20,7 +20,12 @@ jobs:
       - name: Install live-build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y live-build rsync
+          sudo apt-get install -y live-build rsync isolinux syslinux-common
+          sudo install -d /root/isolinux
+          sudo install -m 0644 /usr/lib/ISOLINUX/isolinux.bin /root/isolinux/isolinux.bin
+          sudo install -m 0644 /usr/lib/syslinux/modules/bios/vesamenu.c32 /root/isolinux/vesamenu.c32
+          sudo test -s /root/isolinux/isolinux.bin
+          sudo test -s /root/isolinux/vesamenu.c32
       - name: Build experimental Bookish ISO
         run: sudo bash scripts/build-live-iso.sh "$GITHUB_WORKSPACE/build/bookish-live"
       - name: Verify ISO output and checksum
