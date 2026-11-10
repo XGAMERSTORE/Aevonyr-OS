@@ -8,6 +8,8 @@ See [Unified Bookish OS architecture and migration plan](docs/BOOKISH_UNIFIED_OS
 
 ## Existing prototype (historically Aevonyr)
 
+Use `python3 -m bookish` as the canonical command. The historical `python3 -m aevonyr` remains available for compatibility. Both currently launch the same existing Linux-session shell; neither is an OS installer.
+
 **One System. Two Worlds.**
 
 Aevonyr OS is a custom desktop project with an English-first interface, multilingual localization, and integrations for Windows and Android application compatibility.
@@ -30,20 +32,20 @@ Use Python 3.10+ and Tkinter. On Debian or Ubuntu install Python and Tkinter usi
 
 Clone this repository and open a terminal in its root directory, then run:
 
-    python3 -m aevonyr
+    python3 -m bookish
 
 To list languages or install a sample Dutch language pack:
 
-    python3 -m aevonyr --languages
-    python3 -m aevonyr --install-language language-packs/nl-NL.json
+    python3 -m bookish --languages
+    python3 -m bookish --install-language language-packs/nl-NL.json
 
 To see which compatibility backends are installed:
 
-    python3 -m aevonyr --check
+    python3 -m bookish --check
 
 To launch a Windows executable or install an APK from a terminal:
 
-    python3 -m aevonyr --launch /path/to/file.exe
+    python3 -m bookish --launch /path/to/file.exe
 
 APK installation is not the same as launching the Android app. You can open Waydroid from the Aevonyr Applications page. Not every Windows or Android application will work on Linux x86-64.
 
