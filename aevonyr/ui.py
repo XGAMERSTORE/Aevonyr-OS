@@ -27,7 +27,7 @@ class AevonyrDesktop(tk.Tk):
         self.language = self.preferences["language"]
         self.current_page = "home"
         self.current_dir = Path.home()
-        self.title("Aevonyr OS — Desktop Preview")
+        self.title("Bookish OS — Desktop Preview")
         self.geometry("1140x730")
         self.minsize(780, 520)
         self.configure(bg=BG)
@@ -42,7 +42,7 @@ class AevonyrDesktop(tk.Tk):
         self.sidebar = tk.Frame(self, bg=SIDE, width=205)
         self.sidebar.pack(side="left", fill="y")
         self.sidebar.pack_propagate(False)
-        tk.Label(self.sidebar, text="◕  AEVONYR", bg=SIDE, fg=INK,
+        tk.Label(self.sidebar, text="◕  BOOKISH OS", bg=SIDE, fg=INK,
                  font=("DejaVu Sans", 17, "bold"), pady=29).pack(fill="x")
         self.nav = tk.Frame(self.sidebar, bg=SIDE)
         self.nav.pack(fill="x", padx=12)
@@ -163,18 +163,18 @@ class AevonyrDesktop(tk.Tk):
         try:
             plan = make_plan(path)
             prompt = self.t("confirm_install") if plan.kind == "apk-install" else self.t("confirm_run")
-            if not messagebox.askyesno("Aevonyr OS", f"{prompt}\n\n{path.name}"):
+            if not messagebox.askyesno("Bookish OS", f"{prompt}\n\n{path.name}"):
                 return
             execute_plan(plan)
-            messagebox.showinfo("Aevonyr OS", self.t("started"))
+            messagebox.showinfo("Bookish OS", self.t("started"))
         except (CompatibilityError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def _open_android(self):
         try:
             open_android()
         except (CompatibilityError, OSError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def files_page(self):
         toolbar = tk.Frame(self.body, bg=BG)
@@ -225,12 +225,12 @@ class AevonyrDesktop(tk.Tk):
         else:
             program = shutil.which("xdg-open")
             if not program:
-                messagebox.showerror("Aevonyr OS", "xdg-open is not installed.")
+                messagebox.showerror("Bookish OS", "xdg-open is not installed.")
                 return
             try:
                 subprocess.Popen([program, str(target)], start_new_session=True)
             except OSError as exc:
-                messagebox.showerror("Aevonyr OS", str(exc))
+                messagebox.showerror("Bookish OS", str(exc))
 
     def notes_page(self):
         self._label(self.body, self.t("notes_desc"), 11, MUTED).pack(anchor="w", pady=(0, 12))
@@ -249,9 +249,9 @@ class AevonyrDesktop(tk.Tk):
             destination = notes_path()
             destination.parent.mkdir(parents=True, exist_ok=True)
             destination.write_text(self.note_editor.get("1.0", "end-1c"), encoding="utf-8")
-            messagebox.showinfo("Aevonyr OS", self.t("saved"))
+            messagebox.showinfo("Bookish OS", self.t("saved"))
         except OSError as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def settings_page(self):
         self._label(self.body, self.t("language"), 17, INK, True).pack(anchor="w", pady=(0, 14))
@@ -274,9 +274,9 @@ class AevonyrDesktop(tk.Tk):
             self.preferences["language"] = code
             save_preferences(self.preferences)
             self.show("settings")
-            messagebox.showinfo("Aevonyr OS", self.t("language_installed"))
+            messagebox.showinfo("Bookish OS", self.t("language_installed"))
         except (ValueError, OSError, UnicodeError) as exc:
-            messagebox.showerror("Aevonyr OS", str(exc))
+            messagebox.showerror("Bookish OS", str(exc))
 
     def _select_language(self, _event):
         for code, name in LANGUAGES.items():
@@ -286,12 +286,12 @@ class AevonyrDesktop(tk.Tk):
                 try:
                     save_preferences(self.preferences)
                 except OSError as exc:
-                    messagebox.showerror("Aevonyr OS", str(exc))
+                    messagebox.showerror("Bookish OS", str(exc))
                 self.show("settings")
                 break
 
     def about_page(self):
-        self._label(self.body, "Aevonyr OS 0.5-dev", 22, INK, True).pack(anchor="w", pady=(0, 14))
+        self._label(self.body, "Bookish OS 0.5-dev", 22, INK, True).pack(anchor="w", pady=(0, 14))
         self._label(self.body, self.t("about_desc"), 12, MUTED).pack(anchor="w", pady=(0, 14))
         self._label(self.body, f"Python {platform.python_version()}  •  {platform.system()}",
                     11, MUTED).pack(anchor="w")
