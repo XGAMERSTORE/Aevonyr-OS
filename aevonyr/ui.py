@@ -11,14 +11,14 @@ from .compat import CompatibilityError, backend_status, make_plan, execute_plan,
 from .config import load_preferences, save_preferences, notes_path
 from .i18n import LANGUAGES, tr, install_language_pack
 
-BG = "#100e1c"
-SIDE = "#191528"
-PANEL = "#241b37"
-PANEL2 = "#39244d"
-ACCENT = "#ad7cff"
-INK = "#f6f0ff"
-MUTED = "#bfb1cf"
-PINK = "#ef81d9"
+BG = "#101b1b"  # Midnight library
+SIDE = "#0b1415"
+PANEL = "#1a2b2b"
+PANEL2 = "#294342"
+ACCENT = "#e6b86d"  # Warm gilded details
+INK = "#f7efdf"  # Paper
+MUTED = "#b6c6bc"
+PINK = "#c9a1ba"
 
 class AevonyrDesktop(tk.Tk):
     def __init__(self):
@@ -28,7 +28,7 @@ class AevonyrDesktop(tk.Tk):
         self.current_page = "home"
         self.current_dir = Path.home()
         self.title("Bookish OS — Desktop Preview")
-        self.geometry("1140x730")
+        self.geometry("1240x780")
         self.minsize(780, 520)
         self.configure(bg=BG)
         self._create_shell()
@@ -39,11 +39,11 @@ class AevonyrDesktop(tk.Tk):
         return tr(key, self.language)
 
     def _create_shell(self):
-        self.sidebar = tk.Frame(self, bg=SIDE, width=205)
+        self.sidebar = tk.Frame(self, bg=SIDE, width=225)
         self.sidebar.pack(side="left", fill="y")
         self.sidebar.pack_propagate(False)
         tk.Label(self.sidebar, text="◕  BOOKISH OS", bg=SIDE, fg=INK,
-                 font=("DejaVu Sans", 17, "bold"), pady=29).pack(fill="x")
+                 font=("DejaVu Serif", 17, "bold"), pady=29).pack(fill="x")
         self.nav = tk.Frame(self.sidebar, bg=SIDE)
         self.nav.pack(fill="x", padx=12)
         main = tk.Frame(self, bg=BG)
@@ -65,7 +65,7 @@ class AevonyrDesktop(tk.Tk):
                         bg=bg, fg=color, anchor="w", justify="left")
 
     def _card(self, parent, title, description, action, button_text):
-        card = tk.Frame(parent, bg=PANEL, highlightbackground="#59416c", highlightthickness=1)
+        card = tk.Frame(parent, bg=PANEL, highlightbackground="#47615a", highlightthickness=1)
         self._label(card, title, 16, INK, True, PANEL).pack(anchor="w", padx=20, pady=(18, 9))
         tk.Label(card, text=description, bg=PANEL, fg=MUTED, justify="left",
                  wraplength=290, anchor="w", font=("DejaVu Sans", 10)).pack(
@@ -113,25 +113,63 @@ class AevonyrDesktop(tk.Tk):
             "about": self.about_page
         }[page]()
 
+    def _library_art(self, parent):
+        """Draw a decorative bookshelf without network images or external assets."""
+        canvas = tk.Canvas(parent, bg=PANEL, height=174, highlightthickness=0)
+        canvas.pack(fill="x", padx=24, pady=(0, 16))
+        canvas.bind("<Configure>", lambda event: self._draw_books(canvas, event.width))
+        return canvas
+
+    @staticmethod
+    def _draw_books(canvas, width):
+        canvas.delete("all")
+        width = max(width, 300)
+        canvas.create_rectangle(0, 0, width, 174, fill="#152525", outline="")
+        canvas.create_oval(width - 210, -95, width + 80, 195, fill="#253b36", outline="")
+        canvas.create_oval(width - 140, -36, width + 10, 114, fill="#d9ad67", outline="")
+        canvas.create_oval(width - 129, -25, width - 1, 103, fill="#152525", outline="")
+        canvas.create_line(18, 145, width - 20, 145, fill="#d9ad67", width=3)
+        colors = ("#9b665c", "#3e7771", "#a78353", "#635d80", "#637f69",
+                  "#b08372", "#52768a", "#947c50", "#6d866e", "#805e71")
+        x = 25
+        for index, color in enumerate(colors):
+            height = 68 + (index * 17) % 58
+            book_width = 24 + (index % 3) * 4
+            if x + book_width > width - 230:
+                break
+            canvas.create_rectangle(x, 145 - height, x + book_width, 144,
+                                    fill=color, outline="#142222", width=2)
+            canvas.create_line(x + 6, 151 - height, x + 6, 139,
+                               fill="#e5c99a", width=1)
+            canvas.create_line(x + 4, 133, x + book_width - 4, 133,
+                               fill="#e5c99a", width=1)
+            x += book_width + 5
+        canvas.create_text(width - 110, 144, text="BOOKISH  /  01",
+                           fill="#ead4ac", font=("DejaVu Sans", 10, "bold"))
+
     def home_page(self):
-        hero = tk.Frame(self.body, bg=PANEL)
-        hero.pack(fill="x", pady=(0, 20))
-        self._label(hero, self.t("welcome"), 23, INK, True, PANEL).pack(
-            anchor="w", padx=24, pady=(23, 8))
-        self._label(hero, self.t("tagline"), 12, MUTED, False, PANEL).pack(
-            anchor="w", padx=24, pady=(0, 24))
+        hero = tk.Frame(self.body, bg=PANEL, highlightbackground="#47615a",
+                        highlightthickness=1)
+        hero.pack(fill="x", pady=(0, 18))
+        self._label(hero, "✦  THE LIBRARY DESKTOP", 10, ACCENT, True, PANEL).pack(
+            anchor="w", padx=24, pady=(20, 8))
+        self._label(hero, "Bookish OS", 30, INK, True, PANEL).pack(
+            anchor="w", padx=24)
+        self._label(hero, self.t("welcome"), 12, MUTED, False, PANEL).pack(
+            anchor="w", padx=24, pady=(6, 12))
+        self._library_art(hero)
         row = tk.Frame(self.body, bg=BG)
         row.pack(fill="x")
-        self._card(row, self.t("windows"), self.t("windows_desc"),
-                   self.pick_windows, self.t("choose_exe")).pack(
+        self._card(row, "✦  " + self.t("notes"), self.t("notes_desc"),
+                   lambda: self.show("notes"), self.t("notes")).pack(
                        side="left", expand=True, fill="both", padx=(0, 8))
-        self._card(row, self.t("android"), self.t("android_desc"),
-                   self.pick_apk, self.t("choose_apk")).pack(
+        self._card(row, "▣  " + self.t("files"), self.t("tagline"),
+                   lambda: self.show("files"), self.t("browse")).pack(
                        side="left", expand=True, fill="both", padx=(8, 0))
         status = backend_status()
         label = "    •    ".join(f"{name}: {self.t('ready') if status[key] else self.t('missing')}"
                                 for name, key in (("Wine", "wine"), ("Waydroid", "waydroid")))
-        self._label(self.body, label, 11, MUTED).pack(anchor="w", pady=(23, 0))
+        self._label(self.body, label, 10, MUTED).pack(anchor="w", pady=(18, 0))
 
     def apps_page(self):
         self._label(self.body, self.t("choose_app"), 13, MUTED).pack(anchor="w", pady=(5, 21))
@@ -182,11 +220,11 @@ class AevonyrDesktop(tk.Tk):
         self._button(toolbar, "↑  " + self.t("up"), self._go_up).pack(side="left", padx=(0, 11))
         self._button(toolbar, self.t("browse"), self._browse_dir).pack(side="left")
         self._label(self.body, str(self.current_dir), 10, MUTED).pack(anchor="w", pady=(0, 12))
-        frame = tk.Frame(self.body, bg=PANEL, highlightthickness=1, highlightbackground="#514164")
+        frame = tk.Frame(self.body, bg=PANEL, highlightthickness=1, highlightbackground="#47615a")
         frame.pack(fill="both", expand=True)
         scrollbar = tk.Scrollbar(frame)
         scrollbar.pack(side="right", fill="y")
-        self.file_list = tk.Listbox(frame, bg=PANEL, fg=INK, selectbackground="#694599",
+        self.file_list = tk.Listbox(frame, bg=PANEL, fg=INK, selectbackground="#47615a",
                                     selectforeground=INK, borderwidth=0, highlightthickness=0,
                                     font=("DejaVu Sans Mono", 11), activestyle="none",
                                     yscrollcommand=scrollbar.set)
