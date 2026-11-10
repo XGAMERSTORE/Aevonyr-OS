@@ -11,9 +11,12 @@ fi
 for command in lb rsync; do
   command -v "$command" >/dev/null || { echo "Missing $command" >&2; exit 2; }
 done
-mkdir -p "$OUT/config/package-lists" "$OUT/config/includes.chroot/opt/bookish" \
+mkdir -p "$OUT/config/archives" "$OUT/config/package-lists" "$OUT/config/includes.chroot/opt/bookish" \
   "$OUT/config/includes.chroot/usr/local/bin" \
   "$OUT/config/includes.chroot/etc/xdg/autostart"
+cat > "$OUT/config/archives/bookish-security.list.chroot" <<'EOF'
+deb https://security.debian.org/debian-security bookworm-security main
+EOF
 cat > "$OUT/config/package-lists/bookish.list.chroot" <<'EOF'
 linux-image-amd64
 live-boot
@@ -46,13 +49,11 @@ Terminal=false
 X-GNOME-Autostart-enabled=true
 EOF
 cd "$OUT"
-lb config --mode debian --distribution bookworm --architectures amd64 --binary-images iso-hybrid \
+lb config --mode debian --security false --distribution bookworm --architectures amd64 --binary-images iso-hybrid \
   --bootappend-live "boot=live components" --debian-installer none \
   --archive-areas "main" --mirror-bootstrap "https://deb.debian.org/debian/" \
   --mirror-chroot "https://deb.debian.org/debian/" \
-  --mirror-binary "https://deb.debian.org/debian/" \
-  --mirror-chroot-security "https://security.debian.org/debian-security/" \
-  --mirror-binary-security "https://security.debian.org/debian-security/"
+  --mirror-binary "https://deb.debian.org/debian/"
 lb build
 iso="$(find . -maxdepth 1 -name '*.iso' -type f -print -quit)"
 [[ -n "$iso" ]] || { echo "Build completed without ISO" >&2; exit 1; }
