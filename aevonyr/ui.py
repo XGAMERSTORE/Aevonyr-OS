@@ -10,6 +10,7 @@ from tkinter import ttk, filedialog, messagebox
 from .compat import CompatibilityError, backend_status, make_plan, execute_plan, open_android
 from .config import load_preferences, save_preferences, notes_path
 from .i18n import LANGUAGES, tr, install_language_pack
+from .layout import layout_for_width
 
 BG = "#101b1b"  # Midnight library
 SIDE = "#0b1415"
@@ -32,6 +33,8 @@ class AevonyrDesktop(tk.Tk):
         self.minsize(780, 520)
         self.configure(bg=BG)
         self._create_shell()
+        self._layout_mode = None
+        self.bind("<Configure>", self._on_resize)
         self.show("home")
         self.after(1000, self._tick)
 
@@ -44,6 +47,7 @@ class AevonyrDesktop(tk.Tk):
         self.sidebar.pack_propagate(False)
         tk.Label(self.sidebar, text="◕  BOOKISH OS", bg=SIDE, fg=INK,
                  font=("DejaVu Serif", 17, "bold"), pady=29).pack(fill="x")
+        self.brand = self.sidebar.winfo_children()[0]
         self.nav = tk.Frame(self.sidebar, bg=SIDE)
         self.nav.pack(fill="x", padx=12)
         main = tk.Frame(self, bg=BG)
@@ -52,6 +56,20 @@ class AevonyrDesktop(tk.Tk):
         self.header.pack(fill="x", padx=30, pady=(18, 0))
         self.body = tk.Frame(main, bg=BG)
         self.body.pack(fill="both", expand=True, padx=30, pady=(10, 24))
+
+    def _on_resize(self, event):
+        if event.widget is not self:
+            return
+        profile = layout_for_width(event.width)
+        if profile["mode"] == self._layout_mode:
+            return
+        self._layout_mode = profile["mode"]
+        self.sidebar.configure(width=profile["sidebar_width"])
+        self.brand.configure(text="◕  BOOKISH OS" if profile["label_navigation"] else "◕")
+        self.nav.pack_configure(padx=12 if profile["label_navigation"] else 4)
+        self.header.pack_configure(padx=profile["content_padding"])
+        self.body.pack_configure(padx=profile["content_padding"])
+        self._render_nav()
 
     def _button(self, parent, label, callback, bg=PANEL2):
         return tk.Button(parent, text=label, command=callback, bg=bg, fg=INK,
@@ -79,7 +97,8 @@ class AevonyrDesktop(tk.Tk):
         for page, icon in (("home", "⌂"), ("apps", "◇"), ("files", "▣"),
                            ("notes", "✎"), ("settings", "⚙"), ("about", "ⓘ")):
             selected = page == self.current_page
-            button = self._button(self.nav, f" {icon}   {self.t(page)}",
+            title = f" {icon}   {self.t(page)}" if self._layout_mode != "compact" else icon
+            button = self._button(self.nav, title,
                                   lambda p=page: self.show(p),
                                   PANEL2 if selected else SIDE)
             button.configure(anchor="w", fg=INK if selected else MUTED, pady=14)
