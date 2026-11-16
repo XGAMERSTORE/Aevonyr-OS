@@ -1,0 +1,56 @@
+name: Bookish OS Raspberry Pi 4 ARM64 image
+on:
+  workflow_dispatch:
+  push:
+    branches: [feature/raspberry-pi4-arm64-userspace]
+    paths:
+      - 'pi/**'
+      - 'scripts/build-pi4-image.sh'
+      - '.github/workflows/bookish-pi4-image.yml'
+      - 'aevonyr/**'
+      - 'bookish/**'
+      - 'language-packs/**'
+permissions:
+  contents: read
+concurrency:
+  group: pi4-image-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  image:
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native ARM64 build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y coreutils quilt parted qemu-user-binfmt debootstrap zerofree zip dosfstools e2fsprogs libcap2-bin rsync xz-utils file git curl bc gpg pigz xxd arch-test bmap-tools kmod python3-tk xvfb xauth
+      - name: Test Bookish on ARM64 with a virtual display
+        run: |
+          test "$(uname -m)" = aarch64
+          python3 -m unittest discover -s tests -v
+          xvfb-run -a python3 -c 'from aevonyr.ui import AevonyrDesktop; app = AevonyrDesktop(); app.update(); app.destroy()'
+      - name: Build Raspberry Pi OS based SD image
+        run: |
+          set -o pipefail
+          sudo bash scripts/build-pi4-image.sh "$RUNNER_TEMP/bookish-pi4" 2>&1 | tee "$RUNNER_TEMP/pi4-build.log"
+      - name: Upload image, checksums and build provenance
+        uses: actions/upload-artifact@v4
+        with:
+          name: bookish-pi4-arm64-${{ github.sha }}
+          path: |
+            ${{ runner.temp }}/bookish-pi4/pi-gen/deploy/*.img.xz
+            ${{ runner.temp }}/bookish-pi4/pi-gen/deploy/SHA256SUMS
+            ${{ runner.temp }}/bookish-pi4/pi-gen/deploy/build-info.txt
+            ${{ runner.temp }}/bookish-pi4/pi-gen/deploy/README.md
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14
+      - name: Preserve diagnostic build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pi4-build-log-${{ github.sha }}
+          path: ${{ runner.temp }}/pi4-build.log
+          if-no-files-found: ignore
+          retention-days: 14

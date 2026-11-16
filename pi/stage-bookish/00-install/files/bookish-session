@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /opt/bookish || exit 1
+export PYTHONPATH=/opt/bookish
+exec /usr/bin/python3 -m bookish "$@"
