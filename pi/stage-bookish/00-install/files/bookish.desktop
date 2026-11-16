@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Bookish OS
+Comment=Bookish desktop and reading tools
+Exec=/usr/local/bin/bookish-session
+Terminal=false
+Categories=Office;Education;

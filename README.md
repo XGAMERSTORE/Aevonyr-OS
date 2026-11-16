@@ -68,3 +68,10 @@ Tests:
 Aevonyr OS does not contain Wine or Waydroid source code or binaries, proprietary Microsoft or Google components, or an Android runtime. Wine and Waydroid belong to their respective upstream projects. Packaging them into a public ISO requires observing their respective license terms and providing appropriate notices. The repository owner will select the license for original Aevonyr source prior to public release.
 
 See docs/ROADMAP.md for the ISO milestone.
+
+## Raspberry Pi 4 with 8 GB RAM
+
+An experimental native ARM64 image workflow now builds a Raspberry Pi OS based
+SD-card image with Bookish and reading tools. Download only artifacts from a
+successful **Bookish OS Raspberry Pi 4 ARM64 image** Actions run. Physical Pi 4
+boot and peripherals remain unverified. See [build and first-boot instructions](docs/RASPBERRY_PI4_ARM64.md).

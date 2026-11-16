@@ -1,0 +1,9 @@
+# Bookish OS ARM64 userspace smoke-test image, NOT a Raspberry Pi boot image.
+FROM arm64v8/debian:bookworm-slim
+ENV DEBIAN_FRONTEND=noninteractive PYTHONPATH=/opt/bookish
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-tk ca-certificates && rm -rf /var/lib/apt/lists/*
+WORKDIR /opt/bookish
+COPY aevonyr/ aevonyr/
+COPY bookish/ bookish/
+COPY language-packs/ language-packs/
+CMD ["python3", "-m", "bookish", "--languages"]
